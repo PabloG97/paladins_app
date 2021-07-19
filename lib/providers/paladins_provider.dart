@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'dart:convert';
 import 'package:crypto/crypto.dart';
 import 'package:http/http.dart' as http;
+import 'package:paladins_app/models/get_match_player_details_response.dart';
 import 'package:paladins_app/models/models.dart';
 
 
@@ -13,13 +14,15 @@ class PaladinsProvider extends ChangeNotifier {
   String _endPoint       = 'api.paladins.com'; //No se coloca https
   String _responseFormat = 'Json';
   String _sessionId      = '';
-  DateTime today         = new DateTime.now().toUtc();
   String _timeStamp      = '';
-  int _profileId         = 0;
-  String imgPath = '', playerId = '' , title = '', nameHirez = '', rank = '';
-  double winRate         = 0;
-  double afkRate         = 0;
+  DateTime today         = new DateTime.now().toUtc();
+  String  dataRecolected = '';
+  String state           = '';
+  String idCasuals       = '/';
+  
   List<GetPlayer> playerData = [];
+  List<GetPlayer> getPlayerBatch = [];
+  List<MatchPlayerDetails> matchPlayerDetails = [];
   //List<dynamic> _profile = [];
     
 
@@ -30,6 +33,14 @@ class PaladinsProvider extends ChangeNotifier {
     String _signature =  this.createSignature('createsession');
     createSession(_signature);
     
+  }
+
+  Future<String> _getJsonData(String method, [String parameter = '']) async {
+    String _signature = createSignature(method);
+    final url = Uri.https(_endPoint, '/paladinsapi.svc/$method$_responseFormat/$_devId/$_signature/$_sessionId/$_timeStamp$parameter');
+    final response = await http.get(url);
+    print('URL ($method): $url');
+    return response.body;
   }
 
   getTimeStamp(DateTime today){
@@ -47,55 +58,62 @@ class PaladinsProvider extends ChangeNotifier {
   }
 
   createSession(String signature) async {
-    var url = Uri.https(_endPoint, '/paladinsapi.svc/createsession$_responseFormat/$_devId/$signature/$_timeStamp');
+    final url = Uri.https(_endPoint, '/paladinsapi.svc/createsession$_responseFormat/$_devId/$signature/$_timeStamp');
     final response = await http.get(url);
     final Map<String, dynamic>decodedData = json.decode(response.body);
     _sessionId =  decodedData['session_id'];
-    String _signature = this.createSignature('getplayer');
-    getPlayer(_signature);
-    
+    getPlayer();
+
   }
 
-  Future getPlayer(String signature) async{
-    String _timeStamp = getTimeStamp(today);
-    var url = Uri.https(_endPoint, '/paladinsapi.svc/getplayer$_responseFormat/$_devId/$signature/$_sessionId/$_timeStamp/Gêno');
-    print('URL (getplayer): $url');
-    final response = await http.get(url);
-    final _getPlayerResponse = getPlayerReponseFromJson(response.body);
-    getData(_getPlayerResponse);
+  Future getPlayer() async{
+    final _response = await this._getJsonData('getplayer', '/Gêno');
+    final _getPlayerResponse = getPlayerReponseFromJson(_response);
+    //getData(_getPlayerResponse);
     playerData = _getPlayerResponse;
-    print( imgPath );
-    //getfriends('');
+    
+    getPlayerStatus( _getPlayerResponse[0].id);
+    notifyListeners();
+  }
+  
+  getPlayerStatus(int playerId) async {
+    final jsonData = await this._getJsonData('getplayerstatus','/$playerId');
+    final decodedData = json.decode( jsonData ) ;
+    int _matchId = ( decodedData[0]['Match']);
+    state = ( decodedData[0]['status_string']);
+    //dataRecolected = state;
+    notifyListeners();
+    getMatchPlayerDetails(_matchId);
+  }
+
+  getMatchPlayerDetails(int matchId) async {
+    if(matchId == 0) {
+      return null;
+    }else {
+      final jsonData = await this._getJsonData('getmatchplayerdetails','/$matchId');
+      final decodedData = getMatchPlayerDetailsFromJson( jsonData );
+      matchPlayerDetails = decodedData;
+      if(matchPlayerDetails[0].queue != '486'){
+        for(int i=0; i< matchPlayerDetails.length - 1; i++){
+          idCasuals = '$idCasuals${matchPlayerDetails[i].playerId.toString()},';
+        }
+        idCasuals= '$idCasuals${matchPlayerDetails[matchPlayerDetails.length-1].playerId.toString()}';
+        final jsonData = await this._getJsonData('getplayerbatch', '$idCasuals');
+        final decodedData = getPlayerReponseFromJson(jsonData);
+        getPlayerBatch = decodedData;
+
+        for (int j = 0; j < matchPlayerDetails.length; j++){
+          for(int k = 0; k < getPlayerBatch.length; k++){
+            if(getPlayerBatch[k].hirezName == matchPlayerDetails[j].playerName){
+              matchPlayerDetails[j].tier = getPlayerBatch[k].tierRankedKbm;
+            }
+          }
+        }
+      }
+    }
+    dataRecolected = matchPlayerDetails[0].championName!;
     notifyListeners();
   }
 
-  getData(List<GetPlayer> getPlayerReponse) {
-     imgPath = getPlayerReponse[0].avatarUrl;
-     playerId = getPlayerReponse[0].activePlayerId.toString();
-     title = getPlayerReponse[0].title;
-     nameHirez = getPlayerReponse[0].hzPlayerName;
-     rank = getPlayerReponse[0].rankedKbm.tier.toString();
-     winRate = (getPlayerReponse[0].wins)/(getPlayerReponse[0].wins + getPlayerReponse[0].losses);
-     afkRate = (getPlayerReponse[0].rankedKbm.leaves)/(getPlayerReponse[0].rankedKbm.wins + getPlayerReponse[0].rankedKbm.losses);
-  }
 
-  
-  Future getfriends(String signature) async{
-    String _timeStamp = getTimeStamp(today);
-    String _signature = this.createSignature('getchampionranks');
-    var url = Uri.https(_endPoint, '/paladinsapi.svc/getchampionranks$_responseFormat/$_devId/$_signature/$_sessionId/$_timeStamp/$_profileId');
-     print('URL (getchampionranks): $url');
-    final response = await http.get(url);
-
-    //final getPlayerResponse = getPlayerReponseFromJson(response.body);
-    print(response.body);
-  }
-
-   get profileImage {
-     if(this.imgPath !=  '') {
-       return this.imgPath;
-     } else {
-       return 'https://i.stack.imgur.com/GNhxO.png';
-     }
-  }
 }

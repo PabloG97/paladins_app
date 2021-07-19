@@ -4,7 +4,7 @@ class GetPlayer {
     GetPlayer({
         required this.activePlayerId,
         required this.avatarId,
-        required this.avatarUrl,
+        this.avatarUrl,
         required this.createdDatetime,
         required this.hoursPlayed,
         required this.id,
@@ -28,30 +28,53 @@ class GetPlayer {
         required this.tierConquest,
         required this.tierRankedController,
         required this.tierRankedKbm,
-        required this.title,
+        this.title,
         required this.totalAchievements,
         required this.totalWorshippers,
         required this.totalXp,
         required this.wins,
         required this.hzGamerTag,
-        required this.hzPlayerName,
+        this.hzPlayerName,
         required this.retMsg,
     });
 
+    get hirezName{
+      if(this.hzPlayerName != null)
+        return this.hzPlayerName;
+      else
+        return 'Private profile';
+    }
+
+    get titleProfile{
+      if(this.title != null)
+        return this.title;
+      else
+        return 'No title';
+    }
+
     get avatarImage{
-      if(this.avatarUrl != '')
+      if(this.avatarUrl != null)
         return this.avatarUrl;
       else
         return 'https://i.stack.imgur.com/GNhxO.png';
     }
 
-    get winRate{
+    get winRateRanked{
       return 100*((this.rankedKbm.wins)/(this.rankedKbm.wins+this.rankedKbm.losses));
     }
 
-    get leaveRate{
+    get leaveRateRanked{
       return 100*((this.rankedKbm.leaves)/(this.rankedKbm.wins+this.rankedKbm.losses));
     }
+
+    get winRateCasual{
+      return 100*((this.wins)/(this.wins+this.losses));
+    }
+
+    get leaveRateCasual{
+      return 100*((this.leaves)/(this.wins+this.losses));
+    }
+
 
     get rankKeyboard{
       return this.rankedKbm.rank;
@@ -59,7 +82,7 @@ class GetPlayer {
 
     int activePlayerId;
     int avatarId;
-    String avatarUrl;
+    String? avatarUrl;
     String createdDatetime;
     int hoursPlayed;
     int id;
@@ -83,13 +106,13 @@ class GetPlayer {
     int tierConquest;
     int tierRankedController;
     int tierRankedKbm;
-    String title;
+    String? title;
     int totalAchievements;
     int totalWorshippers;
     int totalXp;
     int wins;
     dynamic hzGamerTag;
-    String hzPlayerName;
+    String? hzPlayerName;
     dynamic retMsg;
 
     factory GetPlayer.fromJson(Map<String, dynamic> json) => GetPlayer(

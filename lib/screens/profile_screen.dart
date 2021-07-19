@@ -10,9 +10,9 @@ class ProfileScreen extends StatelessWidget {
 
     final profileProvider = Provider.of<PaladinsProvider>(context);
 
-    print('Path de la imagen: '+ profileProvider.imgPath,);
+    //print('Path de la imagen: '+ profileProvider.playerData[0].avatarUrl,);
     final size = MediaQuery.of(context).size;
-    if(profileProvider.imgPath == ''){
+    if(profileProvider.dataRecolected == ''){
       return Scaffold(
         appBar: AppBar(
         
@@ -39,8 +39,22 @@ class ProfileScreen extends StatelessWidget {
         child: Column(
           children: [
 
-            ProfileImg(getPlayer: profileProvider.playerData),
-            ProfileData(getPlayer: profileProvider.playerData),
+            ProfileNameAndTitle(getPlayer: profileProvider.playerData),
+            ProfileRank(getPlayer: profileProvider.playerData, state: profileProvider.state),
+
+            Row(
+              children: [
+                    Padding(
+                  padding: EdgeInsets.only(left: 15, top: 0, bottom: 2),
+
+                  child: Text('Current match:', style: TextStyle(fontSize: 19, fontWeight: FontWeight.w500),  overflow: TextOverflow.ellipsis, maxLines: 2)
+                ),
+              ],
+            ),
+            ProfileCurrentMatch( matchPlayerDetails: profileProvider.matchPlayerDetails ),
+            //ProfileCurrentMatch( matchPlayerDetails: profileProvider.matchPlayerDetails ),
+            
+            //MapInfo(),
 
           ],
         ),

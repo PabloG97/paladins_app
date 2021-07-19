@@ -2,12 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:paladins_app/models/models.dart';
 import 'package:paladins_app/providers/providers.dart';
 
-class ProfileData extends StatelessWidget {
+class ProfileRank extends StatelessWidget {
 
   final List<GetPlayer> getPlayer;
+  final String state;
  
 
-  const ProfileData({Key? key, required this.getPlayer}) : super(key: key);
+  const ProfileRank({Key? key, required this.getPlayer, required this.state}) : super(key: key);
 
 
   @override
@@ -27,7 +28,7 @@ class ProfileData extends StatelessWidget {
             child: FadeInImage(
               placeholder: AssetImage('assets/no-image.jpg'), 
               image: NetworkImage(RankProvider.urlRank(getPlayer[0].tierRankedKbm)),
-              height: 115,
+              height: 110,
             ),
           ),
           Column(
@@ -35,20 +36,20 @@ class ProfileData extends StatelessWidget {
             children: [
               //Text('Rankeds Stats'),
               
-              Text('Main:', style: TextStyle( fontSize: 20 ), overflow: TextOverflow.ellipsis, maxLines: 2),
-              Text('Cassie', style: TextStyle( fontSize: 18 ), overflow: TextOverflow.ellipsis, maxLines: 1)
+              Text('Status:', style: TextStyle( fontSize: 20 ), overflow: TextOverflow.ellipsis, maxLines: 2),
+              Text( state , style: TextStyle( fontSize: 18 ), overflow: TextOverflow.ellipsis, maxLines: 1)
             ],
           ),
           Column(
             children: [
               Text('Winrate:', style: TextStyle( fontSize: 20, ), overflow: TextOverflow.ellipsis, maxLines: 2),
-              Text(getPlayer[0].winRate.toStringAsFixed(2)+'%', style: TextStyle( fontSize: 18 ), overflow: TextOverflow.ellipsis, maxLines: 1),
+              Text(getPlayer[0].winRateCasual.toStringAsFixed(2)+'%', style: TextStyle( fontSize: 18 ), overflow: TextOverflow.ellipsis, maxLines: 1),
             ],
           ),
           Column(
             children: [
               Text('Leaves:', style: TextStyle( fontSize: 20, ), overflow: TextOverflow.ellipsis, maxLines: 2),
-              Text(getPlayer[0].leaveRate.toStringAsFixed(2)+'%', style: TextStyle( fontSize: 18 ), overflow: TextOverflow.ellipsis, maxLines: 1),
+              Text(getPlayer[0].leaveRateCasual.toStringAsFixed(2)+'%', style: TextStyle( fontSize: 18 ), overflow: TextOverflow.ellipsis, maxLines: 1),
 
             ],
           ),

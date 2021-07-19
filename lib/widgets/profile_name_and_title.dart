@@ -3,16 +3,16 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:paladins_app/models/models.dart';
 
-class ProfileImg extends StatelessWidget {
+class ProfileNameAndTitle extends StatelessWidget {
 
   final List<GetPlayer> getPlayer;
 
-  const ProfileImg({Key? key, required this.getPlayer,   }) : super(key: key);
+  const ProfileNameAndTitle({Key? key, required this.getPlayer,   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
 
-    final textTheme = Theme.of(context).textTheme;
+    //final textTheme = Theme.of(context).textTheme;
     
     final size = MediaQuery.of(context).size;
 
@@ -37,8 +37,8 @@ class ProfileImg extends StatelessWidget {
             ),
           ),
           SizedBox(height: 7.5),
-          Text(getPlayer[0].hzPlayerName, style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),  overflow: TextOverflow.ellipsis, maxLines: 2),
-          Text(getPlayer[0].title, style: TextStyle(fontSize: 17), overflow: TextOverflow.ellipsis, maxLines: 1),
+          Text(getPlayer[0].hirezName, style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),  overflow: TextOverflow.ellipsis, maxLines: 2),
+          Text(getPlayer[0].titleProfile, style: TextStyle(fontSize: 17), overflow: TextOverflow.ellipsis, maxLines: 1),
         ],
       ),
 
