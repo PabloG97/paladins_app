@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'dart:convert';
 import 'package:crypto/crypto.dart';
 import 'package:http/http.dart' as http;
+import 'package:paladins_app/models/get_champions_response.dart';
 import 'package:paladins_app/models/get_match_player_details_response.dart';
 import 'package:paladins_app/models/models.dart';
 
@@ -16,13 +17,18 @@ class PaladinsProvider extends ChangeNotifier {
   String _sessionId      = '';
   String _timeStamp      = '';
   DateTime today         = new DateTime.now().toUtc();
-  String  dataRecolected = '';
   String state           = '';
   String idCasuals       = '/';
+
+  //Variables bandera
+  String  dataRecolected = '';
+  String currentMatchFlag = '';
   
   List<GetPlayer> playerData = [];
   List<GetPlayer> getPlayerBatch = [];
   List<MatchPlayerDetails> matchPlayerDetails = [];
+  List<GetChampionsRankResponse> championsRank = [];
+
   //List<dynamic> _profile = [];
     
 
@@ -59,6 +65,7 @@ class PaladinsProvider extends ChangeNotifier {
 
   createSession(String signature) async {
     final url = Uri.https(_endPoint, '/paladinsapi.svc/createsession$_responseFormat/$_devId/$signature/$_timeStamp');
+    //print('createSession (URL): $url');
     final response = await http.get(url);
     final Map<String, dynamic>decodedData = json.decode(response.body);
     _sessionId =  decodedData['session_id'];
@@ -72,18 +79,39 @@ class PaladinsProvider extends ChangeNotifier {
     //getData(_getPlayerResponse);
     playerData = _getPlayerResponse;
     
+
+    
     getPlayerStatus( _getPlayerResponse[0].id);
+    getChampionsRank(_getPlayerResponse[0].id);
     notifyListeners();
   }
   
+  getChampions() async{
+    
+    final jsonData = await this._getJsonData('getchampions','/1');
+    final _getChampions = getChampionsResponseFromJson( jsonData );
+    for (int i = 0; i < jsonData.length; i++){
+
+      print('case ${_getChampions[i].id}: {  return "${_getChampions[i].championIconUrl}";} ');
+    }
+  
+  }
+
   getPlayerStatus(int playerId) async {
     final jsonData = await this._getJsonData('getplayerstatus','/$playerId');
     final decodedData = json.decode( jsonData ) ;
     int _matchId = ( decodedData[0]['Match']);
     state = ( decodedData[0]['status_string']);
-    //dataRecolected = state;
+    dataRecolected = state;
     notifyListeners();
-    getMatchPlayerDetails(_matchId);
+    //getMatchPlayerDetails(_matchId);
+  }
+
+  getChampionsRank(int playerId) async {
+    final jsonData = await this._getJsonData('getchampionranks','/$playerId');
+    final _getChampionsRank = getChampionsRankResponseFromJson( jsonData );
+    championsRank = _getChampionsRank;
+    notifyListeners();
   }
 
   getMatchPlayerDetails(int matchId) async {
@@ -111,9 +139,11 @@ class PaladinsProvider extends ChangeNotifier {
         }
       }
     }
-    dataRecolected = matchPlayerDetails[0].championName!;
+    currentMatchFlag = matchPlayerDetails[0].championName!;
+    //dataRecolected = matchPlayerDetails[0].championName!;
     notifyListeners();
   }
+
 
 
 }

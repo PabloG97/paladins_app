@@ -17,6 +17,7 @@ class ProfileScreen extends StatelessWidget {
         appBar: AppBar(
         
         title: Text('Profile-data'),
+        centerTitle: true,
         elevation: 0,
       ),
         body: Container(
@@ -32,7 +33,8 @@ class ProfileScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         
-        title: Text('Profile-data'),
+        title: Text(profileProvider.playerData[0].region),
+        centerTitle: true,
         elevation: 0,
       ),
       body: SingleChildScrollView(
@@ -41,19 +43,8 @@ class ProfileScreen extends StatelessWidget {
 
             ProfileNameAndTitle(getPlayer: profileProvider.playerData),
             ProfileRank(getPlayer: profileProvider.playerData, state: profileProvider.state),
-
-            Row(
-              children: [
-                    Padding(
-                  padding: EdgeInsets.only(left: 15, top: 0, bottom: 2),
-
-                  child: Text('Current match:', style: TextStyle(fontSize: 19, fontWeight: FontWeight.w500),  overflow: TextOverflow.ellipsis, maxLines: 2)
-                ),
-              ],
-            ),
-            ProfileCurrentMatch( matchPlayerDetails: profileProvider.matchPlayerDetails ),
-            //ProfileCurrentMatch( matchPlayerDetails: profileProvider.matchPlayerDetails ),
-            
+            ChampSlider(title: 'Most level: ', getChampionsRank: profileProvider.championsRank),
+            // ProfileCurrentMatch( matchPlayerDetails: profileProvider.matchPlayerDetails ),            
             //MapInfo(),
 
           ],

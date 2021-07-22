@@ -34,6 +34,13 @@ class MatchPlayerDetails {
         required this.tierWins,
     });
 
+    get titleProfile{
+      if(this.playerName != '')
+        return this.playerName;
+      else
+        return '<Private.profile>';
+    }
+
     int accountChampionsPlayed;
     int accountLevel;
     int championId;

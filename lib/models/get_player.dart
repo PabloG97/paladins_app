@@ -56,7 +56,7 @@ class GetPlayer {
       if(this.avatarUrl != null)
         return this.avatarUrl;
       else
-        return 'https://i.stack.imgur.com/GNhxO.png';
+        return 'https://cdn2.steamgriddb.com/file/sgdb-cdn/icon/3e313b9badf12632cdae5452d20e1af6.ico';
     }
 
     get winRateRanked{

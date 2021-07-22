@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:paladins_app/providers/paladins_provider.dart';
 import 'package:paladins_app/screens/profile_screen.dart';
+import 'package:paladins_app/themes/theme.dart';
 import 'package:provider/provider.dart';
 import 'screens/home_screen.dart';
 
@@ -33,11 +34,7 @@ class MyApp extends StatelessWidget {
         'home': ( _ ) => HomeScreen(),
         'profile' : ( _ ) => ProfileScreen(),
       },
-      theme: ThemeData.light().copyWith(
-        appBarTheme: AppBarTheme(
-          color: Colors.lightBlueAccent
-        )
-      ),
+      theme: miTema
     );
   }
 }

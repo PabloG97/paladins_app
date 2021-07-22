@@ -16,7 +16,7 @@ class ProfileRank extends StatelessWidget {
     //final size = MediaQuery.of(context).size;
     return Container(
       width: double.infinity,
-     // color: Colors.green,
+      //color: Colors.green,
      // margin: EdgeInsets.symmetric(horizontal: 25),
       //height: size.height *0.125  ,
       child: Row(
@@ -28,7 +28,7 @@ class ProfileRank extends StatelessWidget {
             child: FadeInImage(
               placeholder: AssetImage('assets/no-image.jpg'), 
               image: NetworkImage(RankProvider.urlRank(getPlayer[0].tierRankedKbm)),
-              height: 110,
+              height: 80,
             ),
           ),
           Column(
@@ -48,7 +48,7 @@ class ProfileRank extends StatelessWidget {
           ),
           Column(
             children: [
-              Text('Leaves:', style: TextStyle( fontSize: 20, ), overflow: TextOverflow.ellipsis, maxLines: 2),
+              Text('Leave:', style: TextStyle( fontSize: 20, ), overflow: TextOverflow.ellipsis, maxLines: 2),
               Text(getPlayer[0].leaveRateCasual.toStringAsFixed(2)+'%', style: TextStyle( fontSize: 18 ), overflow: TextOverflow.ellipsis, maxLines: 1),
 
             ],

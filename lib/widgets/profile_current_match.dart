@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:paladins_app/models/models.dart';
 import 'package:paladins_app/providers/providers.dart';
@@ -15,17 +16,18 @@ class ProfileCurrentMatch extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    /* final paladinsProvider = Provider.of<PaladinsProvider>(context, listen:false );
-    return FutureBuilder(
-      future: paladinsProvider.getMatchPlayerDetails(profileId),
-      builder: ( _ , AsyncSnapShot<List<MatchPlayerDetails>> snapshot) {
-        return ;
-      },
-    ); */
+
+    if(matchPlayerDetails.isEmpty){
+      return Container(
+        child: Center(
+          child: CupertinoActivityIndicator(),
+        ),
+      );
+    }
     final size = MediaQuery.of(context).size;
     return Container(
       width: double.infinity,
-      height: 350,
+      height: 370,
       //margin: EdgeInsets.symmetric(horizontal: 15),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
