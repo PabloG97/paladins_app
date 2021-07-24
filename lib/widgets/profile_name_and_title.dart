@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:paladins_app/models/models.dart';
 
@@ -37,8 +35,9 @@ class ProfileNameAndTitle extends StatelessWidget {
             ),
           ),
           SizedBox(height: 7.5),
-          Text(getPlayer[0].hirezName, style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),  overflow: TextOverflow.ellipsis, maxLines: 2),
-          Text(getPlayer[0].titleProfile, style: TextStyle(fontSize: 17), overflow: TextOverflow.ellipsis, maxLines: 1),
+          Text(getPlayer[0].hirezName, style: Theme.of(context).textTheme.headline1,  overflow: TextOverflow.ellipsis, maxLines: 2, ),
+          Text(getPlayer[0].titleProfile, style: Theme.of(context).textTheme.headline2, overflow: TextOverflow.ellipsis, maxLines: 1),
+          // Text(  )Theme.of(context).textTheme.headline6
         ],
       ),
 

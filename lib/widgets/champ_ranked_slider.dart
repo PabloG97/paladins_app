@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:paladins_app/models/models.dart';
-import 'package:paladins_app/providers/champ_image_provider.dart';
+import 'package:paladins_app/providers/providers.dart';
 
-class ChampSlider extends StatelessWidget {
+class ChampRankedSlider extends StatelessWidget {
 
-  final List<GetChampionsRankResponse> getChampionsRank;
+  final List<GetQueueStatsResponse> getQueueStats;
   final String title;
 
-  const ChampSlider({Key? key, required this.getChampionsRank, required this.title}) : super(key: key);
-
+  const ChampRankedSlider({ Key? key, required this.getQueueStats, required this.title }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -27,9 +26,9 @@ class ChampSlider extends StatelessWidget {
           Expanded(
             child: ListView.builder(
               scrollDirection: Axis.horizontal,
-              itemCount: getChampionsRank.length,
+              itemCount: getQueueStats.length,
               itemBuilder: ( _ , int index){
-                return _ChampImage( championRankResponse: getChampionsRank[index]);
+                return _ChampImage( getQueueStat: getQueueStats[index]);
               }),
           ),
 
@@ -37,15 +36,16 @@ class ChampSlider extends StatelessWidget {
         ],
       ),
     );
+    
   }
 }
 
 class _ChampImage extends StatelessWidget {
 
-  final GetChampionsRankResponse championRankResponse;
+  final GetQueueStatsResponse getQueueStat;
   
 
-  const _ChampImage({ Key? key, required this.championRankResponse }) : super(key: key);
+  const _ChampImage({ Key? key, required this.getQueueStat }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -62,13 +62,13 @@ class _ChampImage extends StatelessWidget {
             borderRadius: BorderRadius.circular(15),
             child: FadeInImage(
               placeholder: AssetImage('assets/loading.gif'),
-              image: NetworkImage('${ChampImageProvider.urlChampImageById(int.parse(championRankResponse.championId))}'),
+              image: NetworkImage('${ChampImageProvider.urlChampImageByName(getQueueStat.champion)}'),
               fit: BoxFit.cover,  
             ),
           ),
           SizedBox(height: 3),
           Text(
-            championRankResponse.champion,
+            getQueueStat.champion,
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
             textAlign: TextAlign.center,

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:paladins_app/providers/providers.dart';
+import 'package:paladins_app/widgets/champ_ranked_slider.dart';
+import 'package:paladins_app/widgets/profile_summary.dart';
 import 'package:paladins_app/widgets/widgets.dart';
 import 'package:provider/provider.dart';
 
@@ -12,7 +14,7 @@ class ProfileScreen extends StatelessWidget {
 
     //print('Path de la imagen: '+ profileProvider.playerData[0].avatarUrl,);
     final size = MediaQuery.of(context).size;
-    if(profileProvider.dataRecolected == ''){
+    if(profileProvider.getPlayerResponse.isEmpty){
       return Scaffold(
         appBar: AppBar(
         
@@ -33,7 +35,7 @@ class ProfileScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         
-        title: Text(profileProvider.playerData[0].region),
+        title: Text(profileProvider.getPlayerResponse[0].region),
         centerTitle: true,
         elevation: 0,
       ),
@@ -41,9 +43,15 @@ class ProfileScreen extends StatelessWidget {
         child: Column(
           children: [
 
-            ProfileNameAndTitle(getPlayer: profileProvider.playerData),
-            ProfileRank(getPlayer: profileProvider.playerData, state: profileProvider.state),
+            ProfileNameAndTitle(getPlayer: profileProvider.getPlayerResponse),
+            Divider(),
+            ProfileRank(getPlayer: profileProvider.getPlayerResponse, state: profileProvider.state),
+            Divider( height: 1,),
+            ProfileSummary(getPlayer: profileProvider.getPlayerResponse[0]),
             ChampSlider(title: 'Most level: ', getChampionsRank: profileProvider.championsRank),
+            ProfileRankedStats(getPlayer: profileProvider.getPlayerResponse[0], getQueueStatsResponse: profileProvider.getQueueStatsResponse),
+            ChampRankedSlider( title: 'Most played(ranked):', getQueueStats: profileProvider.getQueueStatsResponse),
+            
             // ProfileCurrentMatch( matchPlayerDetails: profileProvider.matchPlayerDetails ),            
             //MapInfo(),
 

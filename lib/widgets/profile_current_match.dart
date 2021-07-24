@@ -2,90 +2,105 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:paladins_app/models/models.dart';
 import 'package:paladins_app/providers/providers.dart';
+import 'package:provider/provider.dart';
 /* import 'package:paladins_app/models/models.dart';
 import 'package:paladins_app/providers/providers.dart';
 import 'package:provider/provider.dart'; */
 
 class ProfileCurrentMatch extends StatelessWidget {
 
+
+  final int status;
   final List<MatchPlayerDetails> matchPlayerDetails;
 
-  const ProfileCurrentMatch({Key? key, required this.matchPlayerDetails}) : super(key: key);
-
+  const ProfileCurrentMatch({Key? key, required this.matchPlayerDetails, required this.status}) : super(key: key);
 
 
   @override
   Widget build(BuildContext context) {
-
-    if(matchPlayerDetails.isEmpty){
+  final size = MediaQuery.of(context).size;
+  final profileProvider = Provider.of<PaladinsProvider>(context);  
+    if(profileProvider.status == -1){
       return Container(
         child: Center(
           child: CupertinoActivityIndicator(),
         ),
       );
     }
-    final size = MediaQuery.of(context).size;
-    return Container(
-      width: double.infinity,
-      height: 370,
-      //margin: EdgeInsets.symmetric(horizontal: 15),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
+    else if ( profileProvider.status != 3){
+      return Container(
+        width: size.width,
+        height: size.height*0.8,
+        
+        child: Center(
+          child: Text('The player is not in a live game'),
+        )
+      );
+    }
+    else{
+      final size = MediaQuery.of(context).size;
+      return Container(
+        width: double.infinity,
+        height: 500,
+        //margin: EdgeInsets.symmetric(horizontal: 15),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
 
-          Container(
-            //color: Colors.yellow,
-            width: size.width * .40,
-            child: Column(
-              children: [
-                Text('Team 1'),
-                Expanded(
-                  child: ListView.builder(
-                    itemCount: matchPlayerDetails.length,
-                    itemBuilder: ( _ , int index){
-                      return _Team1(matchPlayerDetail: matchPlayerDetails[index]);
-                    }
-                  ),
-                ), 
-              ],
-            ),
-          ),
-          Container(
-           // color: Colors.brown,
-            width: size.width * .20,
-            child: Center(
+            Container(
+              //color: Colors.yellow,
+              width: size.width * .40,
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Text('Map:', style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),  overflow: TextOverflow.ellipsis, maxLines: 2),
-                  Text('${matchPlayerDetails[0].mapGame}', style: TextStyle(fontSize: 17, fontWeight: FontWeight.w400),  overflow: TextOverflow.ellipsis, maxLines: 4),
+                  Text('Team 1'),
+                  Expanded(
+                    child: ListView.builder(
+                      itemCount: matchPlayerDetails.length,
+                      itemBuilder: ( _ , int index){
+                        return _Team1(matchPlayerDetail: matchPlayerDetails[index]);
+                      }
+                    ),
+                  ), 
+                ],
+              ),
+            ),
+            Container(
+            // color: Colors.brown,
+              width: size.width * .20,
+              child: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Text('Map:', style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),  overflow: TextOverflow.ellipsis, maxLines: 2),
+                    Text('${matchPlayerDetails[0].mapGame}', style: TextStyle(fontSize: 17, fontWeight: FontWeight.w400),  overflow: TextOverflow.ellipsis, maxLines: 4),
 
+                  ],
+                ),
+              )
+            ),
+            Container(
+              //color: Colors.pink,
+              width: size.width * .40,
+              child: Column(
+                children: [
+                  Text('Team 2'),
+                  Expanded(
+                    child: ListView.builder(
+                      itemCount: matchPlayerDetails.length,
+                      itemBuilder: ( _ , int index){
+                        return _Team2(matchPlayerDetail: matchPlayerDetails[index]);
+                      }
+                    ),
+                  ), 
                 ],
               ),
             )
-          ),
-          Container(
-            //color: Colors.pink,
-            width: size.width * .40,
-            child: Column(
-              children: [
-                Text('Team 2'),
-                Expanded(
-                  child: ListView.builder(
-                    itemCount: matchPlayerDetails.length,
-                    itemBuilder: ( _ , int index){
-                      return _Team2(matchPlayerDetail: matchPlayerDetails[index]);
-                    }
-                  ),
-                ), 
-              ],
-            ),
-          )
-          
-        ],
-      ),
-    );
+            
+          ],
+        ),
+      );
+    }
   }
 }
 

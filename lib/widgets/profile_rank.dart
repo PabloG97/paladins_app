@@ -16,7 +16,7 @@ class ProfileRank extends StatelessWidget {
     //final size = MediaQuery.of(context).size;
     return Container(
       width: double.infinity,
-      //color: Colors.green,
+      // color: Colors.green,
      // margin: EdgeInsets.symmetric(horizontal: 25),
       //height: size.height *0.125  ,
       child: Row(
@@ -36,20 +36,20 @@ class ProfileRank extends StatelessWidget {
             children: [
               //Text('Rankeds Stats'),
               
-              Text('Status:', style: TextStyle( fontSize: 20 ), overflow: TextOverflow.ellipsis, maxLines: 2),
-              Text( state , style: TextStyle( fontSize: 18 ), overflow: TextOverflow.ellipsis, maxLines: 1)
+              Text('Status:', style: Theme.of(context).textTheme.headline3, overflow: TextOverflow.ellipsis, maxLines: 2),
+              Text( state , style: Theme.of(context).textTheme.headline2, overflow: TextOverflow.ellipsis, maxLines: 1)
             ],
           ),
           Column(
             children: [
-              Text('Winrate:', style: TextStyle( fontSize: 20, ), overflow: TextOverflow.ellipsis, maxLines: 2),
-              Text(getPlayer[0].winRateCasual.toStringAsFixed(2)+'%', style: TextStyle( fontSize: 18 ), overflow: TextOverflow.ellipsis, maxLines: 1),
+              Text('Winrate:', style: Theme.of(context).textTheme.headline3, overflow: TextOverflow.ellipsis, maxLines: 2),
+              Text(getPlayer[0].winRateCasual.toStringAsFixed(2)+'%', style: Theme.of(context).textTheme.headline2, overflow: TextOverflow.ellipsis, maxLines: 1),
             ],
           ),
           Column(
             children: [
-              Text('Leave:', style: TextStyle( fontSize: 20, ), overflow: TextOverflow.ellipsis, maxLines: 2),
-              Text(getPlayer[0].leaveRateCasual.toStringAsFixed(2)+'%', style: TextStyle( fontSize: 18 ), overflow: TextOverflow.ellipsis, maxLines: 1),
+              Text('Leave:', style: Theme.of(context).textTheme.headline3, overflow: TextOverflow.ellipsis, maxLines: 2),
+              Text(getPlayer[0].leaveRateCasual.toStringAsFixed(2)+'%', style: Theme.of(context).textTheme.headline2, overflow: TextOverflow.ellipsis, maxLines: 1),
 
             ],
           ),

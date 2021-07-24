@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:crypto/crypto.dart';
 import 'package:http/http.dart' as http;
 import 'package:paladins_app/models/get_champions_response.dart';
+import 'package:paladins_app/models/get_match_history_response.dart';
 import 'package:paladins_app/models/get_match_player_details_response.dart';
 import 'package:paladins_app/models/models.dart';
 
@@ -19,15 +20,18 @@ class PaladinsProvider extends ChangeNotifier {
   DateTime today         = new DateTime.now().toUtc();
   String state           = '';
   String idCasuals       = '/';
+  int status             = -1;
 
   //Variables bandera
-  String  dataRecolected = '';
   String currentMatchFlag = '';
   
-  List<GetPlayer> playerData = [];
+  List<GetPlayer> getPlayerResponse = [];
   List<GetPlayer> getPlayerBatch = [];
   List<MatchPlayerDetails> matchPlayerDetails = [];
   List<GetChampionsRankResponse> championsRank = [];
+  List<GetQueueStatsResponse> getQueueStatsResponse = [];
+  List<GetMatchHistoryResponse> getMatchHistoryResponse = [];
+
 
   //List<dynamic> _profile = [];
     
@@ -76,13 +80,14 @@ class PaladinsProvider extends ChangeNotifier {
   Future getPlayer() async{
     final _response = await this._getJsonData('getplayer', '/Gêno');
     final _getPlayerResponse = getPlayerReponseFromJson(_response);
-    //getData(_getPlayerResponse);
-    playerData = _getPlayerResponse;
-    
+    getPlayerResponse = _getPlayerResponse;
 
-    
     getPlayerStatus( _getPlayerResponse[0].id);
     getChampionsRank(_getPlayerResponse[0].id);
+    getQueueStats(_getPlayerResponse[0].id, 486);
+    getMatchHistory(_getPlayerResponse[0].id);
+    getChampions();
+
     notifyListeners();
   }
   
@@ -90,10 +95,10 @@ class PaladinsProvider extends ChangeNotifier {
     
     final jsonData = await this._getJsonData('getchampions','/1');
     final _getChampions = getChampionsResponseFromJson( jsonData );
-    for (int i = 0; i < jsonData.length; i++){
+    // for (int i = 0; i < jsonData.length; i++){
 
-      print('case ${_getChampions[i].id}: {  return "${_getChampions[i].championIconUrl}";} ');
-    }
+    //   print('case "${_getChampions[i].nameEnglish}": {  return "${_getChampions[i].championIconUrl}";} ');
+    // }
   
   }
 
@@ -102,9 +107,9 @@ class PaladinsProvider extends ChangeNotifier {
     final decodedData = json.decode( jsonData ) ;
     int _matchId = ( decodedData[0]['Match']);
     state = ( decodedData[0]['status_string']);
-    dataRecolected = state;
+    status = decodedData[0]['status'];
+    if( status ==  3) getMatchPlayerDetails(_matchId);
     notifyListeners();
-    //getMatchPlayerDetails(_matchId);
   }
 
   getChampionsRank(int playerId) async {
@@ -144,6 +149,19 @@ class PaladinsProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  getQueueStats(int playerId, int queueId) async {
 
+    final jsonData = await this._getJsonData('getqueuestats','/$playerId/$queueId');
+    final _getQueueStats = getQueueStatsResponseFromJson( jsonData );
+    getQueueStatsResponse = ( _getQueueStats );
+    notifyListeners();
+  }
+
+  getMatchHistory(int player) async {
+    final jsonData = await this._getJsonData('getmatchhistory', '/$player');
+    final _getMatchHistoryResponse = getMatchHistoryResponseFromJson( jsonData );
+    getMatchHistoryResponse = _getMatchHistoryResponse;
+    notifyListeners();
+  }
 
 }

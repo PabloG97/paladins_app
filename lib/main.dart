@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:paladins_app/providers/paladins_provider.dart';
 import 'package:paladins_app/screens/profile_screen.dart';
+import 'package:paladins_app/screens/screens.dart';
 import 'package:paladins_app/themes/theme.dart';
 import 'package:provider/provider.dart';
-import 'screens/home_screen.dart';
+import 'screens/matches_screen.dart';
 
 void main() => runApp(AppState());
 
@@ -29,12 +30,13 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: true,
       title: 'Material App',
-      initialRoute: 'profile',
+      initialRoute: 'tabs',
       routes: {
-        'home': ( _ ) => HomeScreen(),
+        'home': ( _ ) => MatchesScreen(),
         'profile' : ( _ ) => ProfileScreen(),
+        'tabs' : ( _ ) => TabsScreen(),
       },
-      theme: miTema
+      theme: experimentalTheme()
     );
   }
 }
