@@ -24,6 +24,29 @@ class DataAnalyzer {
     if( _flankMatches > _damageMatches) return 'Flanker';
     else return 'Damage';
   }
+
+  static getImageRole( String champion){
+    
+      if(champion == 'Ash' || champion == 'Atlas' || champion == 'Barik' || champion == 'Fernando' || champion == 'Inara' || champion == 'Khan' || champion == 'Makoa' || champion == 'Raum' || champion == 'Ruckus' || champion == 'Terminus' || champion == 'Terminus' || champion == 'Torvald' ||  champion == 'Yagorath'){
+        
+        return 'assets/img/Frontline_Icon.png';
+      
+      }else if(champion == 'Corvus' || champion == 'Furia' || champion == 'Grohk' || champion == 'Grover' || champion == 'Io' || champion == 'Jenos' || champion == "Mal'Damba" || champion == 'Pip' || champion == 'Rei' || champion == 'Seris' || champion == 'Seris' || champion == 'Ying'){
+        
+        return 'assets/img/Support_Icon.png';
+      
+      }else if(champion == 'Androxus' || champion == 'Buck' || champion == 'Evie' || champion == 'Koga' || champion == 'Lex' || champion == 'Maeve' || champion == "Moji" || champion == 'Skye' || champion == 'Talus' || champion == 'Vatu' || champion == 'Vora' || champion == 'Zhin'){
+        
+        return 'assets/img/Flank_Icon.png';
+     
+      }else if(champion == 'Bomb King' || champion == 'Cassie' || champion == 'Dredge' || champion == 'Drogoz' || champion == 'Imani' || champion == 'Kinessa' || champion == "Lian" || champion == 'Octavia' || champion == 'Sha Lin' || champion == 'Strix' || champion == 'Tiberius' || champion == 'Tyra' || champion == 'Viktor' || champion == 'Vivian' || champion == 'Willo'){
+        
+        return 'assets/img/Damage_Icon.png';
+      
+      }
+    
+
+  }
 }
 
 

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:paladins_app/providers/providers.dart';
+import 'package:paladins_app/search/search_delegate.dart';
 import 'package:paladins_app/widgets/champ_ranked_slider.dart';
 import 'package:paladins_app/widgets/profile_summary.dart';
 import 'package:paladins_app/widgets/widgets.dart';
@@ -15,21 +16,7 @@ class ProfileScreen extends StatelessWidget {
     //print('Path de la imagen: '+ profileProvider.playerData[0].avatarUrl,);
     final size = MediaQuery.of(context).size;
     if(profileProvider.getPlayerResponse.isEmpty){
-      return Scaffold(
-        appBar: AppBar(
-        
-        title: Text('Profile-data'),
-        centerTitle: true,
-        elevation: 0,
-      ),
-        body: Container(
-          width: double.infinity,
-          height: size.height * 0.5,
-          child: Center(
-            child: CircularProgressIndicator(),
-          ),
-        ),
-      );
+      return _Loading();
     }
 
     return Scaffold(
@@ -38,6 +25,11 @@ class ProfileScreen extends StatelessWidget {
         title: Text(profileProvider.getPlayerResponse[0].region),
         centerTitle: true,
         elevation: 0,
+        actions: [
+          IconButton(
+            onPressed: () => showSearch(context: context, delegate: ProfileSearchDelegate()), 
+            icon: Icon(Icons.search_outlined)),
+        ],
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -56,6 +48,29 @@ class ProfileScreen extends StatelessWidget {
             //MapInfo(),
 
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class _Loading extends StatelessWidget {
+  const _Loading({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+      
+      title: Text('Current Match'),
+      centerTitle: true,
+      elevation: 0,
+    ),
+      body: Container(
+        width: double.infinity,
+        height: double.infinity,
+        child: Center(
+          child: CircularProgressIndicator(),
         ),
       ),
     );

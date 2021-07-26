@@ -1,4 +1,5 @@
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:paladins_app/models/get_match_history_response.dart';
 import 'package:paladins_app/providers/map_provider.dart';
@@ -15,7 +16,7 @@ class MatchSlider extends StatelessWidget {
     
   
     final size = MediaQuery.of(context).size;
-
+    
     return Container(
       width: double.infinity,
       height: size.height * .82,
@@ -29,38 +30,37 @@ class MatchSlider extends StatelessWidget {
             
             child: ListView.builder(
               itemCount: getMatchHistoryResponse.length,
-              
               itemBuilder: ( _ , int index ){
                 final _split = getMatchHistoryResponse[index].mapGame.split(' ');
-                
                 String map = _split[1];
-                print(map);
+                // print(map);
                 return Container(
-                  decoration: BoxDecoration(
+                  child: GestureDetector(
 
-                  ),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.only(bottomRight: Radius.elliptical(85, 65), topLeft: Radius.circular(45) ),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: const Color(0xff212121),
-                        image: DecorationImage(
-                          image: AssetImage("${MapProvider.nameMap(map)}"),
-                          fit: BoxFit.cover,
-                          colorFilter: ColorFilter.mode(Colors.black.withOpacity(0.4), BlendMode.dstATop),
-                        )
-                      ),
-                      margin: EdgeInsets.all(5),
-                      width: double.infinity,
-                      height: 140,
-                      //color: Colors.lightBlue,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          _IdMatchAndRegion(getMatchHistoryResponse: getMatchHistoryResponse, index: index),
-                          _MatchDetails(getMatchHistoryResponse: getMatchHistoryResponse, index: index,),
-                          _Date(getMatchHistoryResponse: getMatchHistoryResponse, index: index,),
-                        ],
+                    onTap: () => Navigator.pushNamed(context, 'details', arguments: getMatchHistoryResponse[index].match),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.only(bottomRight: Radius.elliptical(85, 65), topLeft: Radius.circular(45) ),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: const Color(0xff212121),
+                          image: DecorationImage(
+                            image: AssetImage("${MapProvider.nameMap(map)}"),
+                            fit: BoxFit.cover,
+                            colorFilter: ColorFilter.mode(Colors.black.withOpacity(0.4), BlendMode.dstATop),
+                          )
+                        ),
+                        margin: EdgeInsets.all(5),
+                        width: double.infinity,
+                        height: 142,
+                        //color: Colors.lightBlue,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            _IdMatchAndRegion(getMatchHistoryResponse: getMatchHistoryResponse, index: index),
+                            _MatchDetails(getMatchHistoryResponse: getMatchHistoryResponse, index: index,),
+                            _Date(getMatchHistoryResponse: getMatchHistoryResponse, index: index,),
+                          ],
+                        ),
                       ),
                     ),
                   ),
@@ -137,7 +137,7 @@ class _MatchDetails extends StatelessWidget {
               image: NetworkImage('${ChampImageProvider.urlChampImageByName(getMatchHistoryResponse[index].champion)}')
             ),
           ),
-              _TitleAndDescription(title: getMatchHistoryResponse[index].champion, description: getMatchHistoryResponse[index].timeInMatchSeconds.toString()),
+              _TitleAndImage(champion: getMatchHistoryResponse[index].champion),
               _TitleAndDescription(title: 'Mode:', description: getMatchHistoryResponse[index].mode),
               _TitleAndDescription(title: 'K/D/A', description: getMatchHistoryResponse[index].kdaMatch),
         ],
@@ -195,6 +195,32 @@ class _TitleAndDescription extends StatelessWidget {
         Text( title , style: Theme.of(context).textTheme.headline4, overflow: TextOverflow.ellipsis, maxLines: 2),
         Text( description , style: Theme.of(context).textTheme.headline5, overflow: TextOverflow.ellipsis, maxLines: 1)
       ],
+    );
+  }
+}
+
+class _TitleAndImage extends StatelessWidget {
+
+  final String champion;
+  const _TitleAndImage({Key? key, required this.champion}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      // color: Colors.red,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          Text( champion , style: Theme.of(context).textTheme.headline4, overflow: TextOverflow.ellipsis, maxLines: 2),
+          FadeInImage(
+            placeholder: AssetImage('assets/no-image.jpg'),
+            image: AssetImage('${DataAnalyzer.getImageRole(champion)}'),
+             width: 25,
+             height: 25,
+          )
+        ],
+      ),
     );
   }
 }

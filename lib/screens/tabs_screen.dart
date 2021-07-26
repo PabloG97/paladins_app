@@ -31,7 +31,7 @@ class _Navegacion extends StatelessWidget {
       items: [
         //BottomNavigationBarItem(icon: Icon(Icons.person_outline_outlined),title: 'add'),
         BottomNavigationBarItem(icon: Icon(Icons.person),label: 'Profile'),
-        BottomNavigationBarItem(icon: Icon(Icons.list_alt),label: 'Games'),
+        BottomNavigationBarItem(icon: Icon(Icons.list_alt),label: 'History'),
         BottomNavigationBarItem(icon: Icon(Icons.headset),label: 'Current match'),
 
       ],
@@ -55,9 +55,11 @@ class _Paginas extends StatelessWidget {
       physics: NeverScrollableScrollPhysics(),
       children: [
 
+        // Navigator.pushNamed(context, 'profile', arguments: 'Gêno'),
+
         ProfileScreen(),
 
-        MatchesScreen(),
+        MatchHistoryScreen(),
 
         CurrentMatchScreen()
       ],

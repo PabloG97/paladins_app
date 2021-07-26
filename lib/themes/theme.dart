@@ -96,13 +96,22 @@ ThemeData experimentalTheme() {
           fontSize: 17.0,
           color: Colors.green
         ),
+        bodyText1: base.bodyText1?.copyWith(
+          fontSize: 17,
+          color: Colors.black
+        ),
+        bodyText2: base.bodyText2?.copyWith(
+          fontSize: 15,
+          color: Colors.black
+        ),
         
         
         caption: base.caption?.copyWith(
           color: Color(0xFFCCC5AF),
         ),
-        bodyText2: base.bodyText2?.copyWith(color: Color(0xFF807A6B)));
+    );
   }
+
   final ThemeData base = ThemeData.dark();
   
   return base.copyWith(

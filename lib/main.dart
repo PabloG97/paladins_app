@@ -4,7 +4,7 @@ import 'package:paladins_app/screens/profile_screen.dart';
 import 'package:paladins_app/screens/screens.dart';
 import 'package:paladins_app/themes/theme.dart';
 import 'package:provider/provider.dart';
-import 'screens/matches_screen.dart';
+import 'screens/match_history_screen.dart';
 
 void main() => runApp(AppState());
 
@@ -32,9 +32,10 @@ class MyApp extends StatelessWidget {
       title: 'Material App',
       initialRoute: 'tabs',
       routes: {
-        'home': ( _ ) => MatchesScreen(),
+        'home'    : ( _ ) => MatchHistoryScreen(),
         'profile' : ( _ ) => ProfileScreen(),
-        'tabs' : ( _ ) => TabsScreen(),
+        'tabs'    : ( _ ) => TabsScreen(),
+        'details' : ( _ ) => MatchDetailsScreen(),
       },
       theme: experimentalTheme()
     );

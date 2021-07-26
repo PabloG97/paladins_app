@@ -10,6 +10,10 @@ class CurrentMatchScreen extends StatelessWidget {
   Widget build(BuildContext context) {
   final profileProvider = Provider.of<PaladinsProvider>(context);
 
+    if(profileProvider.status == -1){
+      return Loading();
+    }
+
     return Scaffold(
       appBar: AppBar(
         

@@ -3,9 +3,6 @@ import 'package:flutter/cupertino.dart';
 import 'dart:convert';
 import 'package:crypto/crypto.dart';
 import 'package:http/http.dart' as http;
-import 'package:paladins_app/models/get_champions_response.dart';
-import 'package:paladins_app/models/get_match_history_response.dart';
-import 'package:paladins_app/models/get_match_player_details_response.dart';
 import 'package:paladins_app/models/models.dart';
 
 
@@ -31,7 +28,9 @@ class PaladinsProvider extends ChangeNotifier {
   List<GetChampionsRankResponse> championsRank = [];
   List<GetQueueStatsResponse> getQueueStatsResponse = [];
   List<GetMatchHistoryResponse> getMatchHistoryResponse = [];
-
+  Map<int, List<GetMatchDetailsResponse>> getMatchDetailResponse = {};
+  List<GetItemsResponse> getItemsResponse = [];
+  List<SearchPlayerResponse> searchPlayerResponse = [];
 
   //List<dynamic> _profile = [];
     
@@ -74,6 +73,7 @@ class PaladinsProvider extends ChangeNotifier {
     final Map<String, dynamic>decodedData = json.decode(response.body);
     _sessionId =  decodedData['session_id'];
     getPlayer();
+    
 
   }
 
@@ -86,9 +86,10 @@ class PaladinsProvider extends ChangeNotifier {
     getChampionsRank(_getPlayerResponse[0].id);
     getQueueStats(_getPlayerResponse[0].id, 486);
     getMatchHistory(_getPlayerResponse[0].id);
-    getChampions();
-
+    // _getJsonData('searchplayers','/JPabloG');
+    searchPlayer('JPabloG');
     notifyListeners();
+    getItems();
   }
   
   getChampions() async{
@@ -162,6 +163,35 @@ class PaladinsProvider extends ChangeNotifier {
     final _getMatchHistoryResponse = getMatchHistoryResponseFromJson( jsonData );
     getMatchHistoryResponse = _getMatchHistoryResponse;
     notifyListeners();
+  }
+
+  Future <List<GetMatchDetailsResponse>> getMatchDetails(int matchId) async{
+
+    if (getMatchDetailResponse.containsKey(matchId)) return getMatchDetailResponse[matchId]!;
+
+    print( 'Pidiendo info al server' );
+    final jsonData = await this._getJsonData('getmatchdetails','/$matchId');
+    final decodedData = getMatchDetailsResponseFromJson( jsonData );
+    getMatchDetailResponse[matchId] = decodedData;
+    return decodedData;
+  }
+
+  getItems() async{
+    final jsonData = await this._getJsonData('getitems','/1');
+    final _getItemsResponse = getItemsResponseFromJson( jsonData );
+    getItemsResponse = _getItemsResponse;
+    notifyListeners();
+  }
+
+  Future <List<SearchPlayerResponse>> searchPlayer(String query) async {
+    String _signature = createSignature('searchplayers');
+    final url = Uri.https(_endPoint, '/paladinsapi.svc/searchplayers$_responseFormat/$_devId/$_signature/$_sessionId/$_timeStamp/$query');
+    
+    print('URL (searchplayers) = $url');
+    final response = await http.get(url);
+    final searchResponse = searchPlayerResponseFromJson(response.body);
+    
+    return searchResponse;
   }
 
 }

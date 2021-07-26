@@ -21,12 +21,10 @@ class ProfileCurrentMatch extends StatelessWidget {
   final size = MediaQuery.of(context).size;
   final profileProvider = Provider.of<PaladinsProvider>(context);  
     if(profileProvider.status == -1){
-      return Container(
-        child: Center(
-          child: CupertinoActivityIndicator(),
-        ),
-      );
+    
+      return Loading();
     }
+    
     else if ( profileProvider.status != 3){
       return Container(
         width: size.width,
@@ -182,4 +180,26 @@ class _NameChampAndRank extends StatelessWidget {
     ),
     );
   } 
+}
+
+class Loading extends StatelessWidget {
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+      
+      title: Text('Current Match'),
+      centerTitle: true,
+      elevation: 0,
+    ),
+      body: Container(
+        width: 500,
+        height: 500,
+        child: Center(
+          child: CircularProgressIndicator(),
+        ),
+      ),
+    );
+  }
 }
