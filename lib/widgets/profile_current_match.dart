@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:paladins_app/models/models.dart';
 import 'package:paladins_app/providers/providers.dart';
+import 'package:paladins_app/widgets/widgets.dart';
 import 'package:provider/provider.dart';
 /* import 'package:paladins_app/models/models.dart';
 import 'package:paladins_app/providers/providers.dart';
@@ -22,13 +23,13 @@ class ProfileCurrentMatch extends StatelessWidget {
   final profileProvider = Provider.of<PaladinsProvider>(context);  
     if(profileProvider.status == -1){
     
-      return Loading();
+      return LoadingWidget( title:'Current Match',);
     }
     
     else if ( profileProvider.status != 3){
       return Container(
         width: size.width,
-        height: size.height*0.8,
+        height: size.height*0.77,
         
         child: Center(
           child: Text('The player is not in a live game'),
@@ -180,26 +181,4 @@ class _NameChampAndRank extends StatelessWidget {
     ),
     );
   } 
-}
-
-class Loading extends StatelessWidget {
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-      
-      title: Text('Current Match'),
-      centerTitle: true,
-      elevation: 0,
-    ),
-      body: Container(
-        width: 500,
-        height: 500,
-        child: Center(
-          child: CircularProgressIndicator(),
-        ),
-      ),
-    );
-  }
 }

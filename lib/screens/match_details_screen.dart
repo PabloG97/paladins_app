@@ -26,6 +26,7 @@ class MatchDetailsScreen extends StatelessWidget {
         }
         
         final matches = snapshot.data!;
+        
         winnerTeam = createWinnerTeam(matches);
         loserTeam = createLosserTeam(matches);
 
@@ -42,7 +43,6 @@ class MatchDetailsScreen extends StatelessWidget {
                         _TeamInfo(team: winnerTeam),
                         _Bans(match: matches[0]),
                         _TeamInfo(team: loserTeam),
-                        
                       ],
                     ),
                   )
@@ -72,8 +72,9 @@ class _CustomAppBar extends StatelessWidget {
     return SliverAppBar(
       backgroundColor: experimentalTheme().primaryColor,
       expandedHeight: 150,
-      floating: false,
+      floating: true,
       pinned: true,
+      stretch: true,
       flexibleSpace: FlexibleSpaceBar(
         centerTitle: true,
         titlePadding: EdgeInsets.all(0),
@@ -83,13 +84,19 @@ class _CustomAppBar extends StatelessWidget {
           alignment: Alignment.bottomCenter,
           child: Text('Match Details'),
         ),
+        stretchModes: [
+          StretchMode.zoomBackground,
+          StretchMode.fadeTitle,
+          StretchMode.blurBackground
+
+        ],
         background:  FadeInImage(
           placeholder: AssetImage('assets/no-image.jpg'),
           image: AssetImage('${MapProvider.nameMap(map)}'),
           fit: BoxFit.cover,
-          
         ),
       ),
+     // title: Text('AAAAA'),
     );
   }
 }
@@ -108,48 +115,21 @@ class _TeamInfo extends StatelessWidget {
         dataRowHeight: 60,
         sortAscending: true,
         sortColumnIndex: 3,
+
         columns: [
 
 
-          DataColumn(
-            label: Text(
-              'Name', style: Theme.of(context).textTheme.bodyText1,
-            ),
-            ),
-          DataColumn(
-            label: Text(
-              'Rank', style: Theme.of(context).textTheme.bodyText1,
-            )),
-          DataColumn(
-            label: Text(
-              'K/D/A', style: Theme.of(context).textTheme.bodyText1,
-            )), 
-          DataColumn(
-            onSort: (columnIndex, ascending) {
-              
-            },
-            label: Text(
-              'Damage', style: Theme.of(context).textTheme.bodyText1,
-            ),
-            numeric: true,
-
-            ),
-          DataColumn(
-            label: Text(
-              'Shielding', style: Theme.of(context).textTheme.bodyText1,
-            )),
-          DataColumn(
-            label: Text(
-              'Healing', style: Theme.of(context).textTheme.bodyText1,
-            )),
-          DataColumn(
-            label: Text(
-              'Taken', style: Theme.of(context).textTheme.bodyText1,
-            )),
-          DataColumn(
-            label: Text( 'KD', style: Theme.of(context).textTheme.bodyText1)),
+          DataColumn(label: Text('Name', style: Theme.of(context).textTheme.bodyText1,),),
+          DataColumn(label: Text('Credits', style: Theme.of(context).textTheme.bodyText1,),),
+          DataColumn(label: Text( 'Rank', style: Theme.of(context).textTheme.bodyText1, )),
+          DataColumn(label: Text('K/D/A', style: Theme.of(context).textTheme.bodyText1,)), 
+          DataColumn(label: Text('Damage', style: Theme.of(context).textTheme.bodyText1,),numeric: true,),
+          DataColumn(label: Text('Shielding', style: Theme.of(context).textTheme.bodyText1,)),
+          DataColumn(label: Text('Healing', style: Theme.of(context).textTheme.bodyText1, )),
+          DataColumn(label: Text( 'Taken', style: Theme.of(context).textTheme.bodyText1,)),
+          DataColumn(label: Text( 'KD', style: Theme.of(context).textTheme.bodyText1)),
           DataColumn(label: Text('Items', style: Theme.of(context).textTheme.bodyText1)),
-          // DataColumn(label: Text('Loadout', style: Theme.of(context).textTheme.bodyText1)),
+          DataColumn(label: Text('Loadout', style: Theme.of(context).textTheme.bodyText1)),
             
           
           
@@ -160,6 +140,7 @@ class _TeamInfo extends StatelessWidget {
             
              DataCell( _Player(match: match)),
 
+              DataCell(Text(match.goldEarned.toString().replaceAllMapped(new RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},'), style: Theme.of(context).textTheme.bodyText2,)),              
               DataCell(FadeInImage(image: NetworkImage(RankProvider.urlRank(match.leagueTier)),placeholder: AssetImage('assets/no-image.jpg'), width: 50, height: 50,)),
               DataCell(Text(match.kda, style: Theme.of(context).textTheme.bodyText2,)),
               DataCell(Text(match.damagePlayer.toString().replaceAllMapped(new RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},'), style: Theme.of(context).textTheme.bodyText2,)),
@@ -167,8 +148,8 @@ class _TeamInfo extends StatelessWidget {
               DataCell(Text(match.healing.toString().replaceAllMapped(new RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},'), style: Theme.of(context).textTheme.bodyText2,)),
               DataCell(Text(match.damageTaken.toString().replaceAllMapped(new RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},'), style: Theme.of(context).textTheme.bodyText2,)),
               DataCell(Text(match.kdRatio.toStringAsFixed(2), style: Theme.of(context).textTheme.bodyText2,)),
-              // DataCell(_Items(player: match)),
-              DataCell(_Loadout(player: match),),
+              DataCell(_Items(player: match),),
+              DataCell(_Loadouts(player: match)),
           ]),).toList(),
        // rows: matches.map((MatchDetailsScreen) => null).toList()
       ),
@@ -188,13 +169,16 @@ class _Player extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(35),
-            child: FadeInImage(
-              width: 45,
-              height: 45,
-              placeholder: AssetImage('assets/no-image.jpg'), 
-              image: NetworkImage(ChampImageProvider.urlChampImageByName(match.referenceName))
+          Hero(
+            tag: '${match.referenceName}${match.playerName}${match.match}',
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(35),
+              child: FadeInImage(
+                width: 45,
+                height: 45,
+                placeholder: AssetImage('assets/no-image.jpg'), 
+                image: NetworkImage(ChampImageProvider.urlChampImageByName(match.referenceName))
+              ),
             ),
           ),
           SizedBox(width: 5,),
@@ -221,17 +205,50 @@ class _Bans extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    if(match.ban1 == null && match.ban2 == null && match.ban3 == null && match.ban4 == null && match.ban5 == null && match.ban6 == null){
+    if(match.matchQueueId == 424){
       return Container(
-        child: Padding(padding: EdgeInsets.symmetric(vertical: 25, horizontal: 50), child: Text('VS'),)
+        child: Column(
+          children: [
+            SizedBox(height: 5,),
+            Padding(padding: EdgeInsets.symmetric(horizontal: 2), child: Text('Score: ', style: Theme.of(context).textTheme.headline2,)),
+            SizedBox(height: 10,),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                ( match.winningTaskForce == 1  )
+                ? Container(
+                  child: Row(
+                    children: [
+                      Padding(padding: EdgeInsets.symmetric(horizontal: 2), child: Text(match.team1Score.toString(), style: Theme.of(context).textTheme.headline2,)),
+                      Padding(padding: EdgeInsets.symmetric(horizontal: 20,), child: Text('VS'),),
+                      Padding(padding: EdgeInsets.symmetric(horizontal: 2), child: Text(match.team2Score.toString(), style: Theme.of(context).textTheme.headline2,)),
+                    ],
+                  )
+                )
+                : Container(
+                  child: Row(children: [
+                  Padding(padding: EdgeInsets.symmetric(horizontal: 2), child: Text(match.team2Score.toString(), style: Theme.of(context).textTheme.headline2,)),
+                  Padding(padding: EdgeInsets.symmetric(horizontal: 20,), child: Text('VS'),),
+                  Padding(padding: EdgeInsets.symmetric(horizontal: 2), child: Text(match.team1Score.toString(), style: Theme.of(context).textTheme.headline2,)),
+                  ],),
+                )
+
+              ],
+            ),
+          ],
+        ),
       );
     }
 
-    return Container(
+
+    if( match.matchQueueId == 486) {
+
+      return Container(
       child: Column(
         children: [
           Padding(padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-          child: Text('Bans:'),
+          child: Text('Score:', style: Theme.of(context).textTheme.headline2,),
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -239,16 +256,34 @@ class _Bans extends StatelessWidget {
             children: [
               Column(
                 children: [
-                  Text('Team 1:'),
+                  Text('Team 1 \n bans:'),
                   _BansImages(url: '${ChampImageProvider.urlChampImageById(match.banId1)}'),
                   _BansImages(url: '${ChampImageProvider.urlChampImageById(match.banId3)}'),
                   _BansImages(url: '${ChampImageProvider.urlChampImageById(match.banId6)}'),
                 ],
               ),
-              Padding(padding: EdgeInsets.symmetric(horizontal: 10), child: Text('VS'),),
+              
+                ( match.winningTaskForce == 1  )
+                ? Container(
+                  child: Row(
+                    children: [
+                      Padding(padding: EdgeInsets.symmetric(horizontal: 2), child: Text(match.team1Score.toString(), style: Theme.of(context).textTheme.headline2,)),
+                      Padding(padding: EdgeInsets.symmetric(horizontal: 20,), child: Text('VS'),),
+                      Padding(padding: EdgeInsets.symmetric(horizontal: 2), child: Text(match.team2Score.toString(), style: Theme.of(context).textTheme.headline2,)),
+                    ],
+                  )
+                )
+                : Container(
+                  child: Row(children: [
+                  Padding(padding: EdgeInsets.symmetric(horizontal: 2), child: Text(match.team2Score.toString(), style: Theme.of(context).textTheme.headline2,)),
+                  Padding(padding: EdgeInsets.symmetric(horizontal: 20,), child: Text('VS'),),
+                  Padding(padding: EdgeInsets.symmetric(horizontal: 2), child: Text(match.team1Score.toString(), style: Theme.of(context).textTheme.headline2,)),
+                  ],),
+                ),
+
               Column(
                 children: [
-                  Text('Team 2:'),
+                  Text('Team 2 \n bans:'),
                   _BansImages(url: '${ChampImageProvider.urlChampImageById(match.banId2)}'),
                   _BansImages(url: '${ChampImageProvider.urlChampImageById(match.banId4)}'),
                   _BansImages(url: '${ChampImageProvider.urlChampImageById(match.banId5)}'),
@@ -261,8 +296,27 @@ class _Bans extends StatelessWidget {
         
       ),
     );
-  }
+
+    }
+
+    return Container(
+      child: Column(
+        children: [
+          SizedBox(height: 5,),
+          SizedBox(height: 10,),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+                Padding(padding: EdgeInsets.symmetric(horizontal: 20,), child: Text('VS'),),
+              ],
+            ),
+          ],
+        ),
+      );
+    }
 }
+
 
 class _BansImages extends StatelessWidget {
   final String url;
@@ -314,10 +368,10 @@ List<GetMatchDetailsResponse> createLosserTeam(List<GetMatchDetailsResponse> all
    return losserTeam;
  }
 
-class _Items extends StatelessWidget {
+class _Loadouts extends StatelessWidget {
 
   final GetMatchDetailsResponse player;
-  const _Items({Key? key, required this.player}) : super(key: key);
+  const _Loadouts({Key? key, required this.player}) : super(key: key);
   @override
   Widget build(BuildContext context) {
   final itemList = Provider.of<PaladinsProvider>(context).getItemsResponse;
@@ -326,12 +380,12 @@ class _Items extends StatelessWidget {
     
     child: Row(
       children: [
-        _ImageItem(url: _getItemUrls(player.itemId6, itemList)),
-        _ImageItem(url: _getItemUrls(player.itemId1, itemList)),
-        _ImageItem(url: _getItemUrls(player.itemId2, itemList)),
-        _ImageItem(url: _getItemUrls(player.itemId3, itemList)),
-        _ImageItem(url: _getItemUrls(player.itemId4, itemList)),
-        _ImageItem(url: _getItemUrls(player.itemId5, itemList)),
+        _ImageItem(url: _getItemUrls(player.itemId6, itemList), level: player.itemLevel6, id: player.itemId6),
+        _ImageItem(url: _getItemUrls(player.itemId1, itemList), level: player.itemLevel1, id: player.itemId1),
+        _ImageItem(url: _getItemUrls(player.itemId2, itemList), level: player.itemLevel2, id: player.itemId2),
+        _ImageItem(url: _getItemUrls(player.itemId3, itemList), level: player.itemLevel3, id: player.itemId3),
+        _ImageItem(url: _getItemUrls(player.itemId4, itemList), level: player.itemLevel4, id: player.itemId4),
+        _ImageItem(url: _getItemUrls(player.itemId5, itemList), level: player.itemLevel5, id: player.itemId5),
 
       ],
     ),
@@ -339,9 +393,9 @@ class _Items extends StatelessWidget {
   }
 }
 
-class _Loadout extends StatelessWidget {
+class _Items extends StatelessWidget {
   final GetMatchDetailsResponse player;
-  const _Loadout({Key? key, required this.player}) : super(key: key);
+  const _Items({Key? key, required this.player}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -352,10 +406,10 @@ class _Loadout extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        _ImageItem(url: _getItemUrls(player.activeId1, itemList)),
-        _ImageItem(url: _getItemUrls(player.activeId2, itemList)),
-        _ImageItem(url: _getItemUrls(player.activeId3, itemList)),
-        _ImageItem(url: _getItemUrls(player.activeId4, itemList)),
+        _ImageItem(url: _getItemUrls(player.activeId1, itemList), level: player.activeLevel1, id: player.activeId1),
+        _ImageItem(url: _getItemUrls(player.activeId2, itemList), level: player.activeLevel2, id: player.activeId2),
+        _ImageItem(url: _getItemUrls(player.activeId3, itemList), level: player.activeLevel3, id: player.activeId3),
+        _ImageItem(url: _getItemUrls(player.activeId4, itemList), level: player.activeLevel4, id: player.activeId4),
 
       ],
     ),
@@ -366,30 +420,78 @@ class _Loadout extends StatelessWidget {
 
 class _ImageItem extends StatelessWidget {
   final String url;
+  final int level;
+  final int id;
 
-  const _ImageItem({Key? key, required this.url}) : super(key: key);
+  const _ImageItem({Key? key, required this.url,  required this.level, required this.id}) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    // return FadeInImage(
-    //   placeholder: AssetImage('assets/no-image.jpg'), 
-    //   image: NetworkImage('$url'),
-    //   placeholderErrorBuilder: (context, error, stackTrace)
-    //    {
-    //     return Image.asset(
-    //         'assets/no-image.jpg',
-    //         fit: BoxFit.cover);
-    //   },
-    //   imageErrorBuilder:
-    //     (context, error, stackTrace) {
-    //     return Image.asset(
-    //         'assets/no-image.jpg',
-    //         fit: BoxFit.cover);
-    //   },
-    //   width: 50,
-    //   height: 100,
-    // );
     return Container(
       padding: EdgeInsets.all(1),
+      child: GestureDetector(
+        onTap: () {
+            _buildShowDialog(context,  _getItemOfMatch(id), level );
+        },
+        child: _ImageLoadoutAndItem(url: url),
+      ),
+    );
+    
+  
+  }
+
+
+
+  Future<dynamic> _buildShowDialog(BuildContext context, GetItemsResponse puta, int level) {
+    final size = MediaQuery.of(context).size;
+    if(puta.description == ''){
+      return showDialog(
+    context: context,
+    builder: (BuildContext context) { return Container();}
+      );}
+    return showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          content: Container(
+              width: double.maxFinite,
+              height: 130 ,
+              child: Row(children: [
+                _ImageLoadoutAndItem(url: url),
+                SizedBox( width: 7.5),
+
+                ConstrainedBox(
+                  constraints: BoxConstraints(maxWidth: size.width - 185 ),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(puta.deviceName, style: TextStyle(fontWeight: FontWeight.bold),),
+                      Text(puta.description, maxLines: 5, overflow: TextOverflow.ellipsis),
+                      if(level != 0)
+                      Padding( padding: EdgeInsets.only(top: 10), child: Text('Level: $level'))
+                  ],)
+                ) 
+              
+              ],)
+          ),
+        );
+    }
+  );
+  }
+}
+
+class _ImageLoadoutAndItem extends StatelessWidget {
+  const _ImageLoadoutAndItem({
+    Key? key,
+    required this.url,
+  }) : super(key: key);
+
+  final String url;
+
+  @override
+  Widget build(BuildContext context) {
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(10),
       child: CachedNetworkImage(
         
         fit:BoxFit.fill,
@@ -397,19 +499,35 @@ class _ImageItem extends StatelessWidget {
         height:40,
         imageUrl:'$url',
         placeholder:(context, url) => CircularProgressIndicator(),
-        errorWidget:(context, url, error) => new Icon(Icons.error),
+        errorWidget:(context, url, error) {
+          return Container(
+            padding: EdgeInsets.all(1),
+            child: CachedNetworkImage(
+              
+              fit:BoxFit.fill,
+              width:50,
+              height:40,
+              imageUrl:'https://static.thenounproject.com/png/504708-200.png',
+              placeholder:(context, url) => CircularProgressIndicator(),
+              errorWidget:(context, url, error) => new Icon(Icons.error),
+            ),
+          );
+        },
       ),
     );
   }
 }
 
+ List<GetItemsResponse> itemsUsados = [];
+
 _getItemUrls(int itemId, List<GetItemsResponse> getItemsResponse){
-  if(itemId != 0){
-    for(int i = 0; i < getItemsResponse.length; i++){
-      if( getItemsResponse[i].itemId == itemId){
-        return getItemsResponse[i].itemIconUrl;
-      }
+  int i = 0;
+  while(i != getItemsResponse.length){
+    if( getItemsResponse[i].itemId == itemId){
+      itemsUsados.add(getItemsResponse[i]);
+      return getItemsResponse[i].itemIconUrl;
     }
+    i++;
   }
   return 'https://i.pinimg.com/originals/97/ea/a6/97eaa682491355a6c6b2ad3c7f086a3a.jpg';
 }
@@ -420,12 +538,7 @@ class _Loading extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
       
-      title: Text('Profile-Data'),
-      centerTitle: true,
-      elevation: 0,
-    ),
       body: Container(
         width: double.infinity,
         height: double.infinity,
@@ -434,5 +547,15 @@ class _Loading extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+_getItemOfMatch(int itemId){
+  int i = 0;
+  while(i != itemsUsados.length){
+    if( itemsUsados[i].itemId == itemId){
+      return itemsUsados[i];
+    }
+    i++;
   }
 }

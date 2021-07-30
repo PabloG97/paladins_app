@@ -11,38 +11,46 @@ class MatchHistoryScreen extends StatelessWidget {
     final profileProvider = Provider.of<PaladinsProvider>(context);
     
     if(profileProvider.getMatchHistoryResponse.isEmpty){
-      final size = MediaQuery.of(context).size;
-      return _loading(size);
+      return LoadingWidget(title: 'Match history');
     }
-    return Scaffold(
+    if( profileProvider.getMatchHistoryResponse[0].retMsg != null){
+          final size = MediaQuery.of(context).size;
+          return Scaffold(
       appBar: AppBar(
+        title: Text('Match history'),
         centerTitle: true,
-         title: Text('Match history'),
-          elevation: 0,
-      ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            MatchSlider( getMatchHistoryResponse: profileProvider.getMatchHistoryResponse ),
-          ],
+        elevation: 0,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(bottom: Radius.circular(16)),
         ),
       ),
-    );
-  }
-
-  Scaffold _loading(Size size) {
-    return Scaffold(
-      appBar: AppBar(
-      
-      title: Text('Match History'),
-      centerTitle: true,
-      elevation: 0,
-    ),
-      body: Container(
-        width: double.infinity,
-        height: double.infinity,
-        child: Center(
-          child: CircularProgressIndicator(),
+      body:
+           Container(
+            width: size.width,
+            height: size.height*0.8,
+            child: Center(
+              child: Text('The player has no recent games'),
+            )
+          ));
+      }
+    
+    return RefreshIndicator (
+      onRefresh: profileProvider.getPlayer,
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text('Match history'),
+          centerTitle: true,
+          elevation: 0,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.vertical(bottom: Radius.circular(16)),
+          ),
+        ),
+        body: SingleChildScrollView(
+          child: Column(
+            children: [
+              MatchSlider( getMatchHistoryResponse: profileProvider.getMatchHistoryResponse ),
+            ],
+          ),
         ),
       ),
     );

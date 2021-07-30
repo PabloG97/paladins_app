@@ -32,7 +32,7 @@ class MyApp extends StatelessWidget {
       title: 'Material App',
       initialRoute: 'tabs',
       routes: {
-        'home'    : ( _ ) => MatchHistoryScreen(),
+        'history' : ( _ ) => MatchHistoryScreen(),
         'profile' : ( _ ) => ProfileScreen(),
         'tabs'    : ( _ ) => TabsScreen(),
         'details' : ( _ ) => MatchDetailsScreen(),

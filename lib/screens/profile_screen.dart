@@ -14,40 +14,45 @@ class ProfileScreen extends StatelessWidget {
     final profileProvider = Provider.of<PaladinsProvider>(context);
 
     //print('Path de la imagen: '+ profileProvider.playerData[0].avatarUrl,);
-    final size = MediaQuery.of(context).size;
     if(profileProvider.getPlayerResponse.isEmpty){
       return _Loading();
     }
 
-    return Scaffold(
-      appBar: AppBar(
-        
-        title: Text(profileProvider.getPlayerResponse[0].region),
-        centerTitle: true,
-        elevation: 0,
-        actions: [
-          IconButton(
-            onPressed: () => showSearch(context: context, delegate: ProfileSearchDelegate()), 
-            icon: Icon(Icons.search_outlined)),
-        ],
-      ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-
-            ProfileNameAndTitle(getPlayer: profileProvider.getPlayerResponse),
-            Divider(),
-            ProfileRank(getPlayer: profileProvider.getPlayerResponse, state: profileProvider.state),
-            Divider( height: 1,),
-            ProfileSummary(getPlayer: profileProvider.getPlayerResponse[0]),
-            ChampSlider(title: 'Most level: ', getChampionsRank: profileProvider.championsRank),
-            ProfileRankedStats(getPlayer: profileProvider.getPlayerResponse[0], getQueueStatsResponse: profileProvider.getQueueStatsResponse),
-            ChampRankedSlider( title: 'Most played(ranked):', getQueueStats: profileProvider.getQueueStatsResponse),
-            
-            // ProfileCurrentMatch( matchPlayerDetails: profileProvider.matchPlayerDetails ),            
-            //MapInfo(),
-
+    return RefreshIndicator(
+      onRefresh:  profileProvider.getPlayer,
+      child: Scaffold(
+        appBar: AppBar(
+          
+          title: Text(profileProvider.getPlayerResponse[0].region),
+          centerTitle: true,
+          elevation: 0,
+          actions: [
+            IconButton(
+              onPressed: () => showSearch(context: context, delegate: ProfileSearchDelegate()), 
+              icon: Icon(Icons.search_outlined)),
           ],
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.vertical(bottom: Radius.circular(16)),
+          ),
+        ),
+        body: SingleChildScrollView(
+          child: Column(
+            children: [
+
+              ProfileNameAndTitle(getPlayer: profileProvider.getPlayerResponse),
+              Divider(),
+              ProfileRank(getPlayer: profileProvider.getPlayerResponse, state: profileProvider.state),
+              Divider( height: 1,),
+              ProfileSummary(getPlayer: profileProvider.getPlayerResponse[0]),
+              ChampSlider(title: 'Most level: ', getChampionsRank: profileProvider.championsRank),
+              ProfileRankedStats(getPlayer: profileProvider.getPlayerResponse[0], getQueueStatsResponse: profileProvider.getQueueStatsResponse),
+              ChampRankedSlider( title: 'Most played(ranked):', getQueueStats: profileProvider.getQueueStatsResponse),
+              
+              // ProfileCurrentMatch( matchPlayerDetails: profileProvider.matchPlayerDetails ),            
+              //MapInfo(),
+
+            ],
+          ),
         ),
       ),
     );
@@ -62,9 +67,12 @@ class _Loading extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
       
-      title: Text('Current Match'),
+      title: Text('Profile-Data'),
       centerTitle: true,
       elevation: 0,
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(bottom: Radius.circular(16)),
+        ),
     ),
       body: Container(
         width: double.infinity,

@@ -11,7 +11,7 @@ class CurrentMatchScreen extends StatelessWidget {
   final profileProvider = Provider.of<PaladinsProvider>(context);
 
     if(profileProvider.status == -1){
-      return Loading();
+      return LoadingWidget(title: 'Current Match',);
     }
 
     return Scaffold(
@@ -20,34 +20,15 @@ class CurrentMatchScreen extends StatelessWidget {
         title: Text('Current Match'),
         centerTitle: true,
         elevation: 0,
+         shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(bottom: Radius.circular(16)),
+        ),
       ),
       body: SingleChildScrollView(
         child: Column(
           children: [
             ProfileCurrentMatch(matchPlayerDetails: profileProvider.matchPlayerDetails, status: profileProvider.status)
           ],
-        ),
-      ),
-    );
-  }
-}
-
-class Loading extends StatelessWidget {
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-      
-      title: Text('Current Match'),
-      centerTitle: true,
-      elevation: 0,
-    ),
-      body: Container(
-        width: double.infinity,
-        height: double.infinity,
-        child: Center(
-          child: CircularProgressIndicator(),
         ),
       ),
     );

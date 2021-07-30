@@ -51,9 +51,9 @@ class ProfileSearchDelegate extends SearchDelegate{
     }
 
     final profileProvider = Provider.of<PaladinsProvider>(context, listen: false);
-
-    return FutureBuilder(
-      future: profileProvider.searchPlayer(query),
+    profileProvider.getSuggestionsByQuery(query);
+    return StreamBuilder(
+      stream: profileProvider.suggestionStream,
       builder: ( _ , AsyncSnapshot <List<SearchPlayerResponse>> snapshot){
         
         if(!snapshot.hasData) return _emptyContainer(); 
@@ -62,7 +62,7 @@ class ProfileSearchDelegate extends SearchDelegate{
         final profiles = snapshot.data!;
         return ListView.builder(
           itemCount: profiles.length,
-          itemBuilder: ( _ , int index) => _ProfileItem(profile: profiles[index]) ,
+          itemBuilder: ( _ , int index) => _ProfileItem(profile: profiles[index], profileProvider: profileProvider)
         );
 
       },
@@ -73,15 +73,35 @@ class ProfileSearchDelegate extends SearchDelegate{
 class _ProfileItem extends StatelessWidget {
 
   final SearchPlayerResponse profile;
+  final PaladinsProvider profileProvider;
 
-  const _ProfileItem({Key? key, required this.profile}) : super(key: key);
+  const _ProfileItem({Key? key, required this.profile, required this.profileProvider}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
-    return ListTile(
+  if(profile.hzPlayerName == null){ return Container();}
+    return ListTile(  
       leading: Text( profile.portalId ),
       title: Text(profile.hirezName),
       subtitle: Text('id: ${profile.playerId}'),
-      onTap: (){print(profile.hzPlayerName);},
+      onTap: (){
+        if(profile.hzPlayerName == null ){}
+        if (profile.hzPlayerName == profileProvider.getPlayerResponse[0].name ) {
+          Navigator.pop(context, 'tabs' );
+        }
+        else{
+          profileProvider.getPlayerResponse = [];
+          profileProvider.getMatchHistoryResponse = [];
+          profileProvider.matchPlayerDetails = [];
+          profileProvider.playerSearch = profile.hzPlayerName!;
+          profileProvider.getPlayer();
+          // Navigator.push(context, 'tabs');
+          Navigator.pop(context, 'tabs' );
+          print(profile.hzPlayerName);
+        }
+        },
     );
   }
+  
 }
+

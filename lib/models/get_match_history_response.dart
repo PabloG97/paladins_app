@@ -18,12 +18,12 @@ class GetMatchHistoryResponse {
       required this.activeLevel2,
       required this.activeLevel3,
       required this.activeLevel4,
-      required this.active1,
-      required this.active2,
-      required this.active3,
-      required this.active4,
+      this.active1,
+      this.active2,
+      this.active3,
+      this.active4,
       required this.assists,
-      required this.champion,
+      this.champion,
       required this.championId,
       required this.creeps,
       required this.damage,
@@ -52,25 +52,25 @@ class GetMatchHistoryResponse {
       required this.itemLevel4,
       required this.itemLevel5,
       required this.itemLevel6,
-      required this.item1,
-      required this.item2,
-      required this.item3,
-      required this.item4,
-      required this.item5,
-      required this.item6,
+      this.item1,
+      this.item2,
+      this.item3,
+      this.item4,
+      this.item5,
+      this.item6,
       required this.killingSpree,
       required this.kills,
       required this.level,
-      required this.mapGame,
+      this.mapGame,
       required this.match,
       required this.matchQueueId,
-      required this.matchTime,
+      this.matchTime,
       required this.minutes,
       required this.multiKillMax,
       required this.objectiveAssists,
-      required this.queue,
-      required this.region,
-      required this.skin,
+      this.queue,
+      this.region,
+      this.skin,
       required this.skinId,
       required this.surrendered,
       required this.taskForce,
@@ -78,10 +78,10 @@ class GetMatchHistoryResponse {
       required this.team2Score,
       required this.timeInMatchSeconds,
       required this.wardsPlaced,
-      required this.winStatus,
+      this.winStatus,
       required this.winningTaskForce,
       required this.playerId,
-      required this.playerName,
+      this.playerName,
       this.retMsg,
     });
 
@@ -92,9 +92,14 @@ class GetMatchHistoryResponse {
     get mode{
       if( this.queue == 'Team Deathmatch'){
         return 'TDM';
+      }else if(this.queue == 'Team Deathmatch Training'){
+        return 'TDM training';
+      }else if(this.queue == 'Team Deathmatch Training'){
+        return 'TDM training';
       }
       return this.queue;
     }
+
 
     int activeId1;
     int activeId2;
@@ -104,12 +109,12 @@ class GetMatchHistoryResponse {
     int activeLevel2;
     int activeLevel3;
     int activeLevel4;
-    String active1;
-    String active2;
-    String active3;
-    String active4;
+    String? active1;
+    String? active2;
+    String? active3;
+    String? active4;
     int assists;
-    String champion;
+    String? champion;
     int championId;
     int creeps;
     int damage;
@@ -138,25 +143,25 @@ class GetMatchHistoryResponse {
     int itemLevel4;
     int itemLevel5;
     int itemLevel6;
-    String item1;
-    String item2;
-    String item3;
-    String item4;
-    String item5;
-    String item6;
+    String? item1;
+    String? item2;
+    String? item3;
+    String? item4;
+    String? item5;
+    String? item6;
     int killingSpree;
     int kills;
     int level;
-    String mapGame;
+    String? mapGame;
     int match;
     int matchQueueId;
-    String matchTime;
+    String? matchTime;
     int minutes;
     int multiKillMax;
     int objectiveAssists;
-    String queue;
-    String region;
-    String skin;
+    String? queue;
+    String? region;
+    String? skin;
     int skinId;
     int surrendered;
     int taskForce;
@@ -164,10 +169,10 @@ class GetMatchHistoryResponse {
     int team2Score;
     int timeInMatchSeconds;
     int wardsPlaced;
-    String winStatus;
+    String? winStatus;
     int winningTaskForce;
     int playerId;
-    String playerName;
+    String? playerName;
     dynamic retMsg;
 
     factory GetMatchHistoryResponse.fromJson(Map<String, dynamic> json) => GetMatchHistoryResponse(

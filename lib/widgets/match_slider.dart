@@ -31,13 +31,14 @@ class MatchSlider extends StatelessWidget {
             child: ListView.builder(
               itemCount: getMatchHistoryResponse.length,
               itemBuilder: ( _ , int index ){
-                final _split = getMatchHistoryResponse[index].mapGame.split(' ');
+                final _split = getMatchHistoryResponse[index].mapGame!.split(' ');
                 String map = _split[1];
                 // print(map);
                 return Container(
                   child: GestureDetector(
 
                     onTap: () => Navigator.pushNamed(context, 'details', arguments: getMatchHistoryResponse[index].match),
+                
                     child: ClipRRect(
                       borderRadius: BorderRadius.only(bottomRight: Radius.elliptical(85, 65), topLeft: Radius.circular(45) ),
                       child: Container(
@@ -128,16 +129,19 @@ class _MatchDetails extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(15),
-            child: FadeInImage(
-              placeholder: AssetImage('assets/no-image.jpg'), 
-              height: 80,
-              width: 80,
-              image: NetworkImage('${ChampImageProvider.urlChampImageByName(getMatchHistoryResponse[index].champion)}')
+          Hero(
+            tag: '${getMatchHistoryResponse[index].champion}${getMatchHistoryResponse[index].playerName}${getMatchHistoryResponse[index].match}',
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(15),
+              child: FadeInImage(
+                placeholder: AssetImage('assets/no-image.jpg'), 
+                height: 80,
+                width: 80,
+                image: NetworkImage('${ChampImageProvider.urlChampImageByName(getMatchHistoryResponse[index].champion!)}')
+              ),
             ),
           ),
-              _TitleAndImage(champion: getMatchHistoryResponse[index].champion),
+              _TitleAndImage(champion: getMatchHistoryResponse[index].champion!),
               _TitleAndDescription(title: 'Mode:', description: getMatchHistoryResponse[index].mode),
               _TitleAndDescription(title: 'K/D/A', description: getMatchHistoryResponse[index].kdaMatch),
         ],
