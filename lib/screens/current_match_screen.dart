@@ -20,15 +20,20 @@ class CurrentMatchScreen extends StatelessWidget {
         title: Text('Current Match'),
         centerTitle: true,
         elevation: 0,
-         shape: RoundedRectangleBorder(
+          shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(bottom: Radius.circular(16)),
         ),
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            ProfileCurrentMatch(matchPlayerDetails: profileProvider.matchPlayerDetails, status: profileProvider.status)
-          ],
+      body: RefreshIndicator(
+        onRefresh:  () => profileProvider.getPlayerStatus( profileProvider.playerId ),
+        child: SingleChildScrollView(
+          physics: AlwaysScrollableScrollPhysics(),
+          child: Column(
+            children: [
+              ProfileCurrentMatch(matchPlayerDetails: profileProvider.matchPlayerDetails, status: profileProvider.status),
+              // SizedBox(height: 900)
+            ],
+          ),
         ),
       ),
     );

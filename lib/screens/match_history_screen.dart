@@ -25,32 +25,35 @@ class MatchHistoryScreen extends StatelessWidget {
         ),
       ),
       body:
-           Container(
-            width: size.width,
-            height: size.height*0.8,
-            child: Center(
-              child: Text('The player has no recent games'),
-            )
-          ));
+           RefreshIndicator(
+             onRefresh: () => profileProvider.getMatchHistory(),
+             child: SingleChildScrollView(
+               physics: AlwaysScrollableScrollPhysics(),
+               child: Container(
+                width: size.width,
+                height: size.height*0.8,
+                child: Center(
+                  child: Text('The player has no recent games'),
+                )
+          ),
+             ),
+           ));
       }
     
-    return RefreshIndicator (
-      onRefresh: profileProvider.getPlayer,
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text('Match history'),
-          centerTitle: true,
-          elevation: 0,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.vertical(bottom: Radius.circular(16)),
-          ),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Match history'),
+        centerTitle: true,
+        elevation: 0,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(bottom: Radius.circular(16)),
         ),
-        body: SingleChildScrollView(
-          child: Column(
-            children: [
-              MatchSlider( getMatchHistoryResponse: profileProvider.getMatchHistoryResponse ),
-            ],
-          ),
+      ),
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            MatchSlider( getMatchHistoryResponse: profileProvider.getMatchHistoryResponse ),
+          ],
         ),
       ),
     );

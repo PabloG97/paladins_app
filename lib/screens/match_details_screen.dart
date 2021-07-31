@@ -1,11 +1,15 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:paladins_app/models/models.dart';
 import 'package:provider/provider.dart';
 import 'package:paladins_app/providers/map_provider.dart';
 import 'package:paladins_app/providers/providers.dart';
 import 'package:paladins_app/themes/theme.dart';
+
+
+List<GetItemsResponse> itemsUsados = [];
 
 class MatchDetailsScreen extends StatelessWidget {
   const MatchDetailsScreen({Key? key}) : super(key: key);
@@ -101,33 +105,118 @@ class _CustomAppBar extends StatelessWidget {
   }
 }
 
-class _TeamInfo extends StatelessWidget {
+class _TeamInfo extends StatefulWidget {
 
   final List<GetMatchDetailsResponse> team;
 
   const _TeamInfo({Key? key, required this.team}) : super(key: key);
 
   @override
+  __TeamInfoState createState() => __TeamInfoState();
+}
+
+var _sortAscending = true;
+var _sortColumnIndex = 0;
+class __TeamInfoState extends State<_TeamInfo> {
+  @override
   Widget build(BuildContext context) {
+    // bool sort=true;
+    final _profileProvider = Provider.of<PaladinsProvider>(context, listen: false);
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       child: DataTable(
-        dataRowHeight: 60,
-        sortAscending: true,
-        sortColumnIndex: 3,
+        dataRowHeight: 55,
+        sortColumnIndex: _sortColumnIndex,
+        sortAscending: _sortAscending,
 
         columns: [
 
 
-          DataColumn(label: Text('Name', style: Theme.of(context).textTheme.bodyText1,),),
-          DataColumn(label: Text('Credits', style: Theme.of(context).textTheme.bodyText1,),),
+          DataColumn(label: Text('Name', style: Theme.of(context).textTheme.bodyText1,), onSort: (int columnIndex, bool ascending){
+            setState(() {
+              _sortColumnIndex = columnIndex;
+              _sortAscending = ascending;
+              if(ascending){
+                widget.team..sort((a, b) => a.playerName.compareTo(b.playerName));
+              }else {
+                widget.team..sort((a, b) => b.playerName.compareTo(a.playerName));
+              }
+            });
+          }),
+          DataColumn(label: Text('Credits', style: Theme.of(context).textTheme.bodyText1,),onSort: (int columnIndex, bool ascending){
+            setState(() {
+              _sortColumnIndex = columnIndex;
+              _sortAscending = ascending;
+              if(ascending){
+                widget.team.sort((a, b) => a.goldEarned.compareTo(b.goldEarned));
+              }else {
+                widget.team.sort((a, b) => b.goldEarned.compareTo(a.goldEarned));
+              }
+            });
+          }),
           DataColumn(label: Text( 'Rank', style: Theme.of(context).textTheme.bodyText1, )),
           DataColumn(label: Text('K/D/A', style: Theme.of(context).textTheme.bodyText1,)), 
-          DataColumn(label: Text('Damage', style: Theme.of(context).textTheme.bodyText1,),numeric: true,),
-          DataColumn(label: Text('Shielding', style: Theme.of(context).textTheme.bodyText1,)),
-          DataColumn(label: Text('Healing', style: Theme.of(context).textTheme.bodyText1, )),
-          DataColumn(label: Text( 'Taken', style: Theme.of(context).textTheme.bodyText1,)),
-          DataColumn(label: Text( 'KD', style: Theme.of(context).textTheme.bodyText1)),
+
+          // DataColumn(label: Text('Damage', style: Theme.of(context).textTheme.bodyText1,),numeric: true,),
+          
+           DataColumn(label: Text('Damage'),onSort: (int columnIndex, bool ascending){
+            setState(() {
+              _sortColumnIndex = columnIndex;
+              _sortAscending = ascending;
+              if(ascending){
+                widget.team.sort((a, b) => a.damagePlayer.compareTo(b.damagePlayer));
+              }else {
+                widget.team.sort((a, b) => b.damagePlayer.compareTo(a.damagePlayer));
+              }
+            });
+          }),
+
+           DataColumn(label: Text('Shielding'), onSort: (int columnIndex, bool ascending){
+            setState(() {
+              _sortColumnIndex = columnIndex;
+              _sortAscending = ascending;
+              if(ascending){
+                widget.team.sort((a, b) => a.damageMitigated.compareTo(b.damageMitigated));
+              }else {
+                widget.team.sort((a, b) => b.damageMitigated.compareTo(a.damageMitigated));
+              }
+            });
+          }),
+
+          //DataColumn(label: Text('Shielding', style: Theme.of(context).textTheme.bodyText1,)),
+          DataColumn(label: Text('Healing', style: Theme.of(context).textTheme.bodyText1), onSort: (int columnIndex, bool ascending){
+            setState(() {
+              _sortColumnIndex = columnIndex;
+              _sortAscending = ascending;
+              if(ascending){
+                widget.team.sort((a, b) => a.healing.compareTo(b.healing));
+              }else {
+                widget.team.sort((a, b) => b.healing.compareTo(a.healing));
+              }
+            });
+          }),
+          DataColumn(label: Text( 'Taken', style: Theme.of(context).textTheme.bodyText1,), onSort: (int columnIndex, bool ascending){
+            setState(() {
+              _sortColumnIndex = columnIndex;
+              _sortAscending = ascending;
+              if(ascending){
+                widget.team.sort((a, b) => a.damageTaken.compareTo(b.damageTaken));
+              }else {
+                widget.team.sort((a, b) => b.damageTaken.compareTo(a.damageTaken));
+              }
+            });
+          } ),
+          DataColumn(label: Text( 'KD', style: Theme.of(context).textTheme.bodyText1), onSort: (int columnIndex, bool ascending){
+            setState(() {
+              _sortColumnIndex = columnIndex;
+              _sortAscending = ascending;
+              if(ascending){
+                widget.team.sort((a, b) => a.kdRatio.compareTo(b.kdRatio));
+              }else {
+                widget.team.sort((a, b) => b.kdRatio.compareTo(a.kdRatio));
+              }
+            });
+          }),
           DataColumn(label: Text('Items', style: Theme.of(context).textTheme.bodyText1)),
           DataColumn(label: Text('Loadout', style: Theme.of(context).textTheme.bodyText1)),
             
@@ -135,10 +224,18 @@ class _TeamInfo extends StatelessWidget {
           
         ],
 
-        rows: team.map((match) => DataRow( 
+        rows: widget.team.map((match) => DataRow( 
           cells: [
             
-             DataCell( _Player(match: match)),
+             DataCell( _Player(match: match), onTap: (){
+               if(match.playerName == '' ){ 
+                 final message = 'Private profile';
+                 Fluttertoast.showToast(msg: message, fontSize: 18, backgroundColor: Colors.grey.shade700);
+               }
+               else{
+                 _profileProvider.clearData(match.playerName);
+                 Navigator.pop(context, 'profile' );
+                }}),
 
               DataCell(Text(match.goldEarned.toString().replaceAllMapped(new RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},'), style: Theme.of(context).textTheme.bodyText2,)),              
               DataCell(FadeInImage(image: NetworkImage(RankProvider.urlRank(match.leagueTier)),placeholder: AssetImage('assets/no-image.jpg'), width: 50, height: 50,)),
@@ -380,12 +477,12 @@ class _Loadouts extends StatelessWidget {
     
     child: Row(
       children: [
-        _ImageItem(url: _getItemUrls(player.itemId6, itemList), level: player.itemLevel6, id: player.itemId6),
-        _ImageItem(url: _getItemUrls(player.itemId1, itemList), level: player.itemLevel1, id: player.itemId1),
-        _ImageItem(url: _getItemUrls(player.itemId2, itemList), level: player.itemLevel2, id: player.itemId2),
-        _ImageItem(url: _getItemUrls(player.itemId3, itemList), level: player.itemLevel3, id: player.itemId3),
-        _ImageItem(url: _getItemUrls(player.itemId4, itemList), level: player.itemLevel4, id: player.itemId4),
-        _ImageItem(url: _getItemUrls(player.itemId5, itemList), level: player.itemLevel5, id: player.itemId5),
+        _ImageInteractive(url: _getItemUrls(player.itemId6, itemList), level: player.itemLevel6, id: player.itemId6),
+        _ImageInteractive(url: _getItemUrls(player.itemId1, itemList), level: player.itemLevel1, id: player.itemId1),
+        _ImageInteractive(url: _getItemUrls(player.itemId2, itemList), level: player.itemLevel2, id: player.itemId2),
+        _ImageInteractive(url: _getItemUrls(player.itemId3, itemList), level: player.itemLevel3, id: player.itemId3),
+        _ImageInteractive(url: _getItemUrls(player.itemId4, itemList), level: player.itemLevel4, id: player.itemId4),
+        _ImageInteractive(url: _getItemUrls(player.itemId5, itemList), level: player.itemLevel5, id: player.itemId5),
 
       ],
     ),
@@ -406,10 +503,10 @@ class _Items extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        _ImageItem(url: _getItemUrls(player.activeId1, itemList), level: player.activeLevel1, id: player.activeId1),
-        _ImageItem(url: _getItemUrls(player.activeId2, itemList), level: player.activeLevel2, id: player.activeId2),
-        _ImageItem(url: _getItemUrls(player.activeId3, itemList), level: player.activeLevel3, id: player.activeId3),
-        _ImageItem(url: _getItemUrls(player.activeId4, itemList), level: player.activeLevel4, id: player.activeId4),
+        _ImageInteractive(url: _getItemUrls(player.activeId1, itemList), level: player.activeLevel1, id: player.activeId1),
+        _ImageInteractive(url: _getItemUrls(player.activeId2, itemList), level: player.activeLevel2, id: player.activeId2),
+        _ImageInteractive(url: _getItemUrls(player.activeId3, itemList), level: player.activeLevel3, id: player.activeId3),
+        _ImageInteractive(url: _getItemUrls(player.activeId4, itemList), level: player.activeLevel4, id: player.activeId4),
 
       ],
     ),
@@ -418,12 +515,12 @@ class _Items extends StatelessWidget {
   }
 
 
-class _ImageItem extends StatelessWidget {
+class _ImageInteractive extends StatelessWidget {
   final String url;
   final int level;
   final int id;
 
-  const _ImageItem({Key? key, required this.url,  required this.level, required this.id}) : super(key: key);
+  const _ImageInteractive({Key? key, required this.url,  required this.level, required this.id}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -441,9 +538,9 @@ class _ImageItem extends StatelessWidget {
 
 
 
-  Future<dynamic> _buildShowDialog(BuildContext context, GetItemsResponse puta, int level) {
+  Future<dynamic> _buildShowDialog(BuildContext context, GetItemsResponse item, int level) {
     final size = MediaQuery.of(context).size;
-    if(puta.description == ''){
+    if(item.description == ''){
       return showDialog(
     context: context,
     builder: (BuildContext context) { return Container();}
@@ -454,7 +551,7 @@ class _ImageItem extends StatelessWidget {
         return AlertDialog(
           content: Container(
               width: double.maxFinite,
-              height: 130 ,
+              height: 150 ,
               child: Row(children: [
                 _ImageLoadoutAndItem(url: url),
                 SizedBox( width: 7.5),
@@ -465,8 +562,9 @@ class _ImageItem extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(puta.deviceName, style: TextStyle(fontWeight: FontWeight.bold),),
-                      Text(puta.description, maxLines: 5, overflow: TextOverflow.ellipsis),
+                      Text(item.deviceName, style: TextStyle(fontWeight: FontWeight.bold),),
+                      SizedBox(height: 5,),
+                      Text(item.description, maxLines: 5, overflow: TextOverflow.ellipsis, textAlign: TextAlign.justify,),
                       if(level != 0)
                       Padding( padding: EdgeInsets.only(top: 10), child: Text('Level: $level'))
                   ],)
@@ -518,7 +616,7 @@ class _ImageLoadoutAndItem extends StatelessWidget {
   }
 }
 
- List<GetItemsResponse> itemsUsados = [];
+ 
 
 _getItemUrls(int itemId, List<GetItemsResponse> getItemsResponse){
   int i = 0;
@@ -559,3 +657,5 @@ _getItemOfMatch(int itemId){
     i++;
   }
 }
+
+ 

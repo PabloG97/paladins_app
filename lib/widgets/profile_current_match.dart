@@ -27,13 +27,19 @@ class ProfileCurrentMatch extends StatelessWidget {
     }
     
     else if ( profileProvider.status != 3){
-      return Container(
-        width: size.width,
-        height: size.height*0.77,
-        
-        child: Center(
-          child: Text('The player is not in a live game'),
-        )
+      return RefreshIndicator(
+        onRefresh: () => profileProvider.getMatchHistory(),
+        child: SingleChildScrollView(
+          physics: AlwaysScrollableScrollPhysics(),
+          child: Container(
+            width: size.width,
+            height: size.height*0.77,
+            
+            child: Center(
+              child: Text('The player is not in a live game'),
+            )
+          ),
+        ),
       );
     }
     else{

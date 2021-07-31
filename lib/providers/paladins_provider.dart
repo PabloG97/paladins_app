@@ -98,6 +98,8 @@ class PaladinsProvider extends ChangeNotifier {
     getQueueStats(playerId, 486);
     getMatchHistory();
     notifyListeners();
+    // _getJsonData('getchampionskins','/2092/9');
+    // _getJsonData('getbountyitems');
   }
   
   // getChampions() async{
@@ -169,7 +171,6 @@ class PaladinsProvider extends ChangeNotifier {
   Future getMatchHistory() async {
     final jsonData = await this._getJsonData('getmatchhistory', '/$playerId');
     final _getMatchHistoryResponse = getMatchHistoryResponseFromJson( jsonData );
-
     getMatchHistoryResponse = _getMatchHistoryResponse;
     notifyListeners();
   }
@@ -177,15 +178,33 @@ class PaladinsProvider extends ChangeNotifier {
   Future <List<GetMatchDetailsResponse>> getMatchDetails(int matchId) async{
 
     if (getMatchDetailResponse.containsKey(matchId)) return getMatchDetailResponse[matchId]!;
-
+    _idCasuals       = '/';
     print( 'Pidiendo info al server' );
     final jsonData = await this._getJsonData('getmatchdetails','/$matchId');
     final decodedData = getMatchDetailsResponseFromJson( jsonData );
-    getMatchDetailResponse[matchId] = decodedData;
 
-    
+    if (decodedData[0].matchQueueId != 486){
+      for(int i=0; i< decodedData.length - 1; i++){
+        _idCasuals = '$_idCasuals${decodedData[i].playerId.toString()},';
+      }
+      _idCasuals= '$_idCasuals${decodedData[decodedData.length-1].playerId.toString()}';
+      final _jsonData = await this._getJsonData('getplayerbatch', '$_idCasuals');
+      final _decodedData = getPlayerReponseFromJson(_jsonData);
+      getPlayerBatch = _decodedData;
+
+      for (int j = 0; j < decodedData.length; j++){
+        for(int k = 0; k < getPlayerBatch.length; k++){
+          if(getPlayerBatch[k].hirezName == decodedData[j].playerName){
+            decodedData[j].leagueTier = getPlayerBatch[k].tierRankedKbm;
+          }
+        }
+      }
+    }
+
+    getMatchDetailResponse[matchId] = decodedData;
     return decodedData;
   }
+
   getItems() async{
 
     final jsonData = await this._getJsonData('getitems','/1');
@@ -223,4 +242,19 @@ class PaladinsProvider extends ChangeNotifier {
 
   }
 
+clearData(String newName){
+  
+  if( newName != playerSearch){
+    playerSearch = newName;
+    getPlayerResponse = [];
+    getMatchHistoryResponse = [];
+    getPlayerBatch = [];
+    getPlayer();
+  }
+  
+
 }
+
+
+}
+

@@ -118,7 +118,7 @@ ThemeData experimentalTheme() {
   return base.copyWith(
       textTheme: _basicTextTheme(base.textTheme),
       //textTheme: Typography().white,
-      primaryColor: Color(0xffce107c),
+      primaryColor: Color(0xff2a3e54),
       //primaryColor: Color(0xff4829b2),
       indicatorColor: Color(0xFF807A6B),
       scaffoldBackgroundColor: Color(0xFFF5F5F5),

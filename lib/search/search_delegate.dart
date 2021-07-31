@@ -81,7 +81,11 @@ class _ProfileItem extends StatelessWidget {
   Widget build(BuildContext context) {
   if(profile.hzPlayerName == null){ return Container();}
     return ListTile(  
-      leading: Text( profile.portalId ),
+      leading: FadeInImage(
+        image: NetworkImage(PlataformProvider.urlPlataform(profile.portalId)), 
+        placeholder: AssetImage('assets/no-image.jpg'),
+        height: 50,
+        width: 50,),
       title: Text(profile.hirezName),
       subtitle: Text('id: ${profile.playerId}'),
       onTap: (){

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:paladins_app/models/get_match_history_response.dart';
 import 'package:paladins_app/providers/map_provider.dart';
 import 'package:paladins_app/providers/providers.dart';
+import 'package:provider/provider.dart';
 
 class MatchSlider extends StatelessWidget {
 
@@ -13,7 +14,7 @@ class MatchSlider extends StatelessWidget {
   
   @override
   Widget build(BuildContext context) {
-    
+    final profileProvider = Provider.of<PaladinsProvider>(context);
   
     final size = MediaQuery.of(context).size;
     
@@ -28,45 +29,48 @@ class MatchSlider extends StatelessWidget {
         children: [
           Expanded(
             
-            child: ListView.builder(
-              itemCount: getMatchHistoryResponse.length,
-              itemBuilder: ( _ , int index ){
-                final _split = getMatchHistoryResponse[index].mapGame!.split(' ');
-                String map = _split[1];
-                // print(map);
-                return Container(
-                  child: GestureDetector(
+            child: RefreshIndicator(
+              onRefresh: () => profileProvider.getMatchHistory(),
+              child: ListView.builder(
+                itemCount: getMatchHistoryResponse.length,
+                itemBuilder: ( _ , int index ){
+                  final _split = getMatchHistoryResponse[index].mapGame!.split(' ');
+                  String map = _split[1];
+                  // print(map);
+                  return Container(
+                    child: GestureDetector(
 
-                    onTap: () => Navigator.pushNamed(context, 'details', arguments: getMatchHistoryResponse[index].match),
-                
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.only(bottomRight: Radius.elliptical(85, 65), topLeft: Radius.circular(45) ),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: const Color(0xff212121),
-                          image: DecorationImage(
-                            image: AssetImage("${MapProvider.nameMap(map)}"),
-                            fit: BoxFit.cover,
-                            colorFilter: ColorFilter.mode(Colors.black.withOpacity(0.4), BlendMode.dstATop),
-                          )
-                        ),
-                        margin: EdgeInsets.all(5),
-                        width: double.infinity,
-                        height: 142,
-                        //color: Colors.lightBlue,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            _IdMatchAndRegion(getMatchHistoryResponse: getMatchHistoryResponse, index: index),
-                            _MatchDetails(getMatchHistoryResponse: getMatchHistoryResponse, index: index,),
-                            _Date(getMatchHistoryResponse: getMatchHistoryResponse, index: index,),
-                          ],
+                      onTap: () => Navigator.pushNamed(context, 'details', arguments: getMatchHistoryResponse[index].match),
+                  
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.only(bottomRight: Radius.elliptical(85, 65), topLeft: Radius.circular(45) ),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: const Color(0xff212121),
+                            image: DecorationImage(
+                              image: AssetImage("${MapProvider.nameMap(map)}"),
+                              fit: BoxFit.cover,
+                              colorFilter: ColorFilter.mode(Colors.black.withOpacity(0.4), BlendMode.dstATop),
+                            )
+                          ),
+                          margin: EdgeInsets.all(5),
+                          width: double.infinity,
+                          height: 142,
+                          //color: Colors.lightBlue,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              _IdMatchAndRegion(getMatchHistoryResponse: getMatchHistoryResponse, index: index),
+                              _MatchDetails(getMatchHistoryResponse: getMatchHistoryResponse, index: index,),
+                              _Date(getMatchHistoryResponse: getMatchHistoryResponse, index: index,),
+                            ],
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                );
-              },
+                  );
+                },
+              ),
             ),
           ),
         ],
