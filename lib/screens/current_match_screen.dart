@@ -31,7 +31,6 @@ class CurrentMatchScreen extends StatelessWidget {
           child: Column(
             children: [
               ProfileCurrentMatch(matchPlayerDetails: profileProvider.matchPlayerDetails, status: profileProvider.status),
-              // SizedBox(height: 900)
             ],
           ),
         ),

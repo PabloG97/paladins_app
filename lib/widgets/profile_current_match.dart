@@ -28,7 +28,7 @@ class ProfileCurrentMatch extends StatelessWidget {
     
     else if ( profileProvider.status != 3){
       return RefreshIndicator(
-        onRefresh: () => profileProvider.getMatchHistory(),
+        onRefresh: () => profileProvider.getPlayerStatus( profileProvider.playerId ),
         child: SingleChildScrollView(
           physics: AlwaysScrollableScrollPhysics(),
           child: Container(
