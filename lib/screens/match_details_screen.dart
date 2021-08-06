@@ -10,8 +10,12 @@ import 'package:paladins_app/themes/theme.dart';
 
 
 List<GetItemsResponse> itemsUsados = [];
+var _sortAscending = true;
+var _sortColumnIndex = 0;
 
 class MatchDetailsScreen extends StatelessWidget {
+
+
   const MatchDetailsScreen({Key? key}) : super(key: key);
 
   @override
@@ -31,6 +35,7 @@ class MatchDetailsScreen extends StatelessWidget {
         
         final matches = snapshot.data!;
         
+        _getPartyGroups(matches);
         winnerTeam = createWinnerTeam(matches);
         loserTeam = createLosserTeam(matches);
 
@@ -59,6 +64,8 @@ class MatchDetailsScreen extends StatelessWidget {
     );
   }
 }
+
+
 
 class _CustomAppBar extends StatelessWidget {
 
@@ -115,8 +122,7 @@ class _TeamInfo extends StatefulWidget {
   __TeamInfoState createState() => __TeamInfoState();
 }
 
-var _sortAscending = true;
-var _sortColumnIndex = 0;
+
 class __TeamInfoState extends State<_TeamInfo> {
   @override
   Widget build(BuildContext context) {
@@ -155,6 +161,17 @@ class __TeamInfoState extends State<_TeamInfo> {
             });
           }),
           DataColumn(label: Text( 'Rank', style: Theme.of(context).textTheme.bodyText1, )),
+          DataColumn(label: Text( 'Party', style: Theme.of(context).textTheme.bodyText1 ),onSort: (int columnIndex, bool ascending){
+            setState(() {
+              _sortColumnIndex = columnIndex;
+              _sortAscending = ascending;
+              if(ascending){
+                widget.team.sort((a, b) => a.partyName.compareTo(b.partyName));
+              }else {
+                widget.team.sort((a, b) => b.partyName.compareTo(a.partyName));
+              }
+            });
+          }),
           DataColumn(label: Text('K/D/A', style: Theme.of(context).textTheme.bodyText1,)), 
 
           // DataColumn(label: Text('Damage', style: Theme.of(context).textTheme.bodyText1,),numeric: true,),
@@ -239,6 +256,7 @@ class __TeamInfoState extends State<_TeamInfo> {
 
               DataCell(Text(match.goldEarned.toString().replaceAllMapped(new RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},'), style: Theme.of(context).textTheme.bodyText2,)),              
               DataCell(FadeInImage(image: NetworkImage(RankProvider.urlRank(match.leagueTier)),placeholder: AssetImage('assets/no-image.jpg'), width: 50, height: 50,)),
+              DataCell(Text(match.partyName, style: Theme.of(context).textTheme.bodyText2,)),
               DataCell(Text(match.kda, style: Theme.of(context).textTheme.bodyText2,)),
               DataCell(Text(match.damagePlayer.toString().replaceAllMapped(new RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},'), style: Theme.of(context).textTheme.bodyText2,)),
               DataCell(Text(match.damageMitigated.toString().replaceAllMapped(new RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},'), style: Theme.of(context).textTheme.bodyText2,)),
@@ -616,8 +634,6 @@ class _ImageLoadoutAndItem extends StatelessWidget {
   }
 }
 
- 
-
 _getItemUrls(int itemId, List<GetItemsResponse> getItemsResponse){
   int i = 0;
   while(i != getItemsResponse.length){
@@ -658,4 +674,22 @@ _getItemOfMatch(int itemId){
   }
 }
 
- 
+_getPartyGroups(List<GetMatchDetailsResponse> matchDetails){
+
+  int _noParty = 1;
+
+  for(int i = 0; i < matchDetails.length; i++ ){
+    if( matchDetails[i].hasGroup == false){
+      for(int k = 0; k < matchDetails.length; k++){
+        if(matchDetails[i].partyId == matchDetails[k].partyId &&   matchDetails[k].hasGroup == false && (i != k)){
+          matchDetails[i].partyName = 'Party $_noParty';
+          matchDetails[k].partyName = 'Party $_noParty';
+          matchDetails[k].hasGroup  =  true;
+          matchDetails[i].hasGroup  =  true;
+        }
+      }
+      if(matchDetails[i].hasGroup) _noParty++;
+    }
+
+  }
+}

@@ -31,6 +31,7 @@ class PaladinsProvider extends ChangeNotifier {
   List<MatchPlayerDetails> matchPlayerDetails = [];
   List<GetChampionsRankResponse> championsRank = [];
   List<GetQueueStatsResponse> getQueueStatsResponse = [];
+  List<GetQueueStatsResponse> getCasualStats = [];
   List<GetMatchHistoryResponse> getMatchHistoryResponse = [];
   Map<int, List<GetMatchDetailsResponse>> getMatchDetailResponse = {};
   List<GetItemsResponse> getItemsResponse = [];
@@ -96,6 +97,7 @@ class PaladinsProvider extends ChangeNotifier {
     getPlayerStatus( playerId);
     getChampionsRank(playerId);
     getQueueStats(playerId, 486);
+    getQueueStats(playerId, 424);
     getMatchHistory();
     notifyListeners();
     // _getJsonData('getchampionskins','/2092/9');
@@ -164,9 +166,14 @@ class PaladinsProvider extends ChangeNotifier {
 
     final jsonData = await this._getJsonData('getqueuestats','/$playerId/$queueId');
     final _getQueueStats = getQueueStatsResponseFromJson( jsonData );
-    getQueueStatsResponse = ( _getQueueStats );
+    if(queueId == 424){
+      getCasualStats = (_getQueueStats);
+    }else{
+      getQueueStatsResponse = ( _getQueueStats );
+    }
     notifyListeners();
   }
+
 
   Future getMatchHistory() async {
     final jsonData = await this._getJsonData('getmatchhistory', '/$playerId');
@@ -255,6 +262,13 @@ clearData(String newName){
 
 }
 
+  Future refreshGetPlayer() async {
+    final _response = await this._getJsonData('getplayer', '/$playerSearch');
+    final _getPlayerResponse = getPlayerReponseFromJson(_response);
+    getPlayerResponse = _getPlayerResponse;
+    playerId = _getPlayerResponse[0].id;
+    getPlayerStatus( playerId);
+  }
 
 }
 

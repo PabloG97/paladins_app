@@ -23,12 +23,12 @@ ThemeData basicTheme() {
           fontSize: 15.0,
           color: Colors.green
         ),
-        headline4: base.headline5?.copyWith(
+        headline4: base.headline4?.copyWith(
           fontFamily: 'Roboto',
           fontSize: 24.0,
           color: Colors.white,
         ),
-        headline3: base.headline5?.copyWith(
+        headline3: base.headline3?.copyWith(
           fontFamily: 'Merriweather',
           fontSize: 22.0,
           color: Colors.grey,
@@ -76,12 +76,13 @@ ThemeData experimentalTheme() {
           //letterSpacing: 0,
           color: Colors.black
         ),
-        headline3: base.headline5?.copyWith(
+        headline3: base.headline3?.copyWith(
           fontFamily: 'play',
           fontSize: 20.0,
-          color: Colors.black
+          color: Colors.black,
+          // fontWeight: FontWeight.bold,
         ),
-        headline4: base.headline5?.copyWith(
+        headline4: base.headline4?.copyWith(
           fontFamily: 'play',
           fontSize: 21.0,
           color: Colors.white,
@@ -92,9 +93,10 @@ ThemeData experimentalTheme() {
           color: Colors.white,
         ),
         headline6: base.headline6?.copyWith(
-          //fontFamily: 'play',
-          fontSize: 17.0,
-          color: Colors.green
+          fontFamily: 'play',
+          fontSize: 19.0,
+          color: Colors.black54,
+          fontWeight: FontWeight.w600
         ),
         bodyText1: base.bodyText1?.copyWith(
           fontSize: 17,

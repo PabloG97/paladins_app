@@ -14,7 +14,7 @@ class ProfileRankedStats extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    String mainRole = DataAnalyzer.mainRole(getQueueStatsResponse); 
+    String mainRole = DataAnalyzer.mainRoleRanked(getQueueStatsResponse); 
     return Container(
       width: double.infinity,
       //color: Colors.red,
@@ -24,7 +24,7 @@ class ProfileRankedStats extends StatelessWidget {
         children: [
           Padding(
             padding: EdgeInsets.only(left: 15, top: 0, bottom: 2),
-            child: Text( 'Ranked stats:' , style: Theme.of(context).textTheme.headline3,  overflow: TextOverflow.ellipsis, maxLines: 2)
+            child: Text( 'Ranked stats (current split):' , style: Theme.of(context).textTheme.headline6,  overflow: TextOverflow.ellipsis, maxLines: 2)
           
           ),
           SizedBox(height: 10,),
@@ -45,7 +45,7 @@ class ProfileRankedStats extends StatelessWidget {
                   width: size.width * 0.33,
                   child: Column(
                     children: [
-                      _TitleAndDescription(title: 'Main:', description: mainRole)
+                      _TitleAndDescription(title: 'Tier:', description: getPlayer.tierRankedKbm.toString())
                     ],
                   ),
                 ), 

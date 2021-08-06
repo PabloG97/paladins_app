@@ -260,6 +260,8 @@ class GetMatchDetailsResponse {
     String? playerPortalId;
     String? playerPortalUserId;
     dynamic retMsg;
+    bool hasGroup = false;
+    String partyName = 'Solo';
 
     factory GetMatchDetailsResponse.fromJson(Map<String, dynamic> json) => GetMatchDetailsResponse(
         accountLevel: json["Account_Level"],

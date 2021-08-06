@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:paladins_app/providers/providers.dart';
 import 'package:paladins_app/search/search_delegate.dart';
-import 'package:paladins_app/widgets/champ_ranked_slider.dart';
 import 'package:paladins_app/widgets/profile_summary.dart';
 import 'package:paladins_app/widgets/widgets.dart';
 import 'package:provider/provider.dart';
@@ -19,7 +18,7 @@ class ProfileScreen extends StatelessWidget {
     }
 
     return RefreshIndicator(
-      onRefresh:  profileProvider.getPlayer,
+      onRefresh:  profileProvider.refreshGetPlayer,
       child: Scaffold(
         appBar: AppBar(
           
@@ -45,8 +44,8 @@ class ProfileScreen extends StatelessWidget {
               Divider( height: 1,),
               ProfileSummary(getPlayer: profileProvider.getPlayerResponse[0]),
               ChampSlider(title: 'Most level: ', getChampionsRank: profileProvider.championsRank),
-              ProfileRankedStats(getPlayer: profileProvider.getPlayerResponse[0], getQueueStatsResponse: profileProvider.getQueueStatsResponse),
-              ChampRankedSlider( title: 'Most played(ranked):', getQueueStats: profileProvider.getQueueStatsResponse),
+              // ProfileRankedStats(getPlayer: profileProvider.getPlayerResponse[0], getQueueStatsResponse: profileProvider.getQueueStatsResponse),
+              // ChampRankedSlider( title: 'Most played(ranked):', getQueueStats: profileProvider.getQueueStatsResponse),
               
               // ProfileCurrentMatch( matchPlayerDetails: profileProvider.matchPlayerDetails ),            
               //MapInfo(),
