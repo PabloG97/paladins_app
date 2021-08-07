@@ -34,7 +34,7 @@ class _Navegacion extends StatelessWidget {
         BottomNavigationBarItem(icon: Icon(Icons.person),label: 'Profile'),
         BottomNavigationBarItem(icon: Icon(Icons.stacked_bar_chart),label: 'Analysis'),
         BottomNavigationBarItem(icon: Icon(Icons.list_alt),label: 'History'),
-        BottomNavigationBarItem(icon: Icon(Icons.headset),label: 'Current match'),
+        BottomNavigationBarItem(icon: Icon(Icons.headset),label: 'Live match'),
 
       ],
     );

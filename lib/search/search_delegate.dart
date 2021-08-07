@@ -32,7 +32,27 @@ class ProfileSearchDelegate extends SearchDelegate{
   
     @override
     Widget buildResults(BuildContext context) {
-      return Text('builResults');
+      if(query.isEmpty){
+        return _emptyContainer();
+      }
+
+      final profileProvider = Provider.of<PaladinsProvider>(context, listen: false);
+      profileProvider.getSuggestionsByQuery(query);
+      return StreamBuilder(
+        stream: profileProvider.suggestionStream,
+        builder: ( _ , AsyncSnapshot <List<SearchPlayerResponse>> snapshot){
+          
+          if(!snapshot.hasData) return _emptyContainer(); 
+
+
+          final profiles = snapshot.data!;
+          return ListView.builder(
+            itemCount: profiles.length,
+            itemBuilder: ( _ , int index) => _ProfileItem(profile: profiles[index], profileProvider: profileProvider)
+          );
+
+        },
+      );
     }
   
 

@@ -34,7 +34,7 @@ class AnalysisData extends StatelessWidget {
             TableRow(
 
               children: [
-                _TitleAndDescription(title: 'Region: ', description: getPlayer.region),
+                Padding(padding: EdgeInsets.symmetric(horizontal: 7.5),child: _TitleAndDescription(title: 'Region: ', description: getPlayer.region)),
                 _TitleAndDescription(title: 'Hours played: ', description: getPlayer.hoursPlayed.toString()),
                 _TitleAndDescription(title: 'Created: ', description: date[0]),
               ]

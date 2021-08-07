@@ -94,7 +94,7 @@ ThemeData experimentalTheme() {
         ),
         headline6: base.headline6?.copyWith(
           fontFamily: 'play',
-          fontSize: 19.0,
+          fontSize: 20.35,
           color: Colors.black54,
           fontWeight: FontWeight.w600
         ),

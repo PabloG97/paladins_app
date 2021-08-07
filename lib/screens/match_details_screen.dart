@@ -681,7 +681,7 @@ _getPartyGroups(List<GetMatchDetailsResponse> matchDetails){
   for(int i = 0; i < matchDetails.length; i++ ){
     if( matchDetails[i].hasGroup == false){
       for(int k = 0; k < matchDetails.length; k++){
-        if(matchDetails[i].partyId == matchDetails[k].partyId &&   matchDetails[k].hasGroup == false && (i != k)){
+        if(matchDetails[i].partyId == matchDetails[k].partyId &&   matchDetails[k].hasGroup == false && (i != k) && matchDetails[i].partyId != 0 && matchDetails[k].partyId != 0 ){
           matchDetails[i].partyName = 'Party $_noParty';
           matchDetails[k].partyName = 'Party $_noParty';
           matchDetails[k].hasGroup  =  true;
