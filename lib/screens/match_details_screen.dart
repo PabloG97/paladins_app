@@ -8,29 +8,27 @@ import 'package:paladins_app/providers/map_provider.dart';
 import 'package:paladins_app/providers/providers.dart';
 import 'package:paladins_app/themes/theme.dart';
 
-
 List<GetItemsResponse> itemsUsados = [];
 var _sortAscending = true;
 var _sortColumnIndex = 0;
 
 class MatchDetailsScreen extends StatelessWidget {
 
-
-  const MatchDetailsScreen({Key? key}) : super(key: key);
+  const MatchDetailsScreen({Key? key, }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
 
     List<GetMatchDetailsResponse> winnerTeam;
     List<GetMatchDetailsResponse> loserTeam;
-
+    new Future.delayed(const Duration(milliseconds: 4000));
     final profileProvider = Provider.of<PaladinsProvider>(context, listen: false);
     final int matchId = ModalRoute.of(context)?.settings.arguments as int;
     return FutureBuilder(
       future: profileProvider.getMatchDetails(matchId),
       builder: ( _ , AsyncSnapshot<List<GetMatchDetailsResponse>> snapshot){
-        if (! snapshot.hasData){
-          return _Loading();
+        if (!snapshot.hasData){
+         return _Loading();
         }
         
         final matches = snapshot.data!;
@@ -149,6 +147,21 @@ class __TeamInfoState extends State<_TeamInfo> {
               }
             });
           }),
+
+          DataColumn(label: Text( 'Level', style: Theme.of(context).textTheme.bodyText1, ), onSort: (int columnIndex, bool ascending){
+            setState(() {
+              _sortColumnIndex = columnIndex;
+              _sortAscending = ascending;
+              if(ascending){
+                widget.team.sort((a, b) => a.accountLevel.compareTo(b.accountLevel));
+              }else {
+                widget.team.sort((a, b) => b.accountLevel.compareTo(a.accountLevel));
+              }
+            });
+          }  ),
+
+          DataColumn(label: Text( 'Rank', style: Theme.of(context).textTheme.bodyText1)),
+          
           DataColumn(label: Text('Credits', style: Theme.of(context).textTheme.bodyText1,),onSort: (int columnIndex, bool ascending){
             setState(() {
               _sortColumnIndex = columnIndex;
@@ -160,7 +173,7 @@ class __TeamInfoState extends State<_TeamInfo> {
               }
             });
           }),
-          DataColumn(label: Text( 'Rank', style: Theme.of(context).textTheme.bodyText1, )),
+
           DataColumn(label: Text( 'Party', style: Theme.of(context).textTheme.bodyText1 ),onSort: (int columnIndex, bool ascending){
             setState(() {
               _sortColumnIndex = columnIndex;
@@ -252,10 +265,11 @@ class __TeamInfoState extends State<_TeamInfo> {
                else{
                  _profileProvider.clearData(match.playerName);
                  Navigator.pop(context, 'profile' );
-                }}),
+               }}),
 
-              DataCell(Text(match.goldEarned.toString().replaceAllMapped(new RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},'), style: Theme.of(context).textTheme.bodyText2,)),              
+              DataCell(Text(match.accountLevel.toString().replaceAllMapped(new RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},'), style: Theme.of(context).textTheme.bodyText2,)),              
               DataCell(FadeInImage(image: NetworkImage(RankProvider.urlRank(match.leagueTier)),placeholder: AssetImage('assets/no-image.jpg'), width: 50, height: 50,)),
+              DataCell(Text(match.goldEarned.toString().replaceAllMapped(new RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},'), style: Theme.of(context).textTheme.bodyText2,)),              
               DataCell(Text(match.partyName, style: Theme.of(context).textTheme.bodyText2,)),
               DataCell(Text(match.kda, style: Theme.of(context).textTheme.bodyText2,)),
               DataCell(Text(match.damagePlayer.toString().replaceAllMapped(new RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},'), style: Theme.of(context).textTheme.bodyText2,)),
@@ -265,7 +279,7 @@ class __TeamInfoState extends State<_TeamInfo> {
               DataCell(Text(match.kdRatio.toStringAsFixed(2), style: Theme.of(context).textTheme.bodyText2,)),
               DataCell(_Items(player: match),),
               DataCell(_Loadouts(player: match)),
-          ]),).toList(),
+          ]),).toList(),  
        // rows: matches.map((MatchDetailsScreen) => null).toList()
       ),
     );
@@ -280,12 +294,14 @@ class _Player extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    
+    //match.idHero = match.referenceName+match.playerName+match.match.toString();
     return Container(
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Hero(
-            tag: '${match.referenceName}${match.playerName}${match.match}',
+            tag: match.idHero!,
             child: ClipRRect(
               borderRadius: BorderRadius.circular(35),
               child: FadeInImage(
@@ -690,6 +706,8 @@ _getPartyGroups(List<GetMatchDetailsResponse> matchDetails){
       }
       if(matchDetails[i].hasGroup) _noParty++;
     }
-
+    if(matchDetails[i].idHero == null){
+      matchDetails[i].idHero = '${ matchDetails[i].referenceName}${matchDetails[i].playerName}${matchDetails[i].match}';
+    }
   }
 }

@@ -17,8 +17,8 @@ class ProfileNameAndTitle extends StatelessWidget {
     return Container(
       
       width: double.infinity,
-      height: size.height * 0.275,
-     // color: Colors.grey,
+      // height: size.height * 0.50,
+      // color: Colors.grey,
       child: Column(
         children: [
           Container(

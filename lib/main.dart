@@ -28,6 +28,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      
       debugShowCheckedModeBanner: false,
       title: 'Material App',
       initialRoute: 'tabs',
@@ -37,7 +38,7 @@ class MyApp extends StatelessWidget {
         'tabs'    : ( _ ) => TabsScreen(),
         'details' : ( _ ) => MatchDetailsScreen(),
       },
-      theme: experimentalTheme()
+      theme: experimentalTheme(),
     );
   }
 }

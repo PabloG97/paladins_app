@@ -173,6 +173,7 @@ class GetMatchHistoryResponse {
     int winningTaskForce;
     int playerId;
     String? playerName;
+    String? idHero;
     dynamic retMsg;
 
     factory GetMatchHistoryResponse.fromJson(Map<String, dynamic> json) => GetMatchHistoryResponse(

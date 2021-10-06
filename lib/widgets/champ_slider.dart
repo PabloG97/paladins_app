@@ -14,8 +14,8 @@ class ChampSlider extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      height: 165,
-      //color: Colors.red,
+      height: 185,
+      // color: Colors.red,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -52,20 +52,53 @@ class _ChampImage extends StatelessWidget {
     return Container(
       width: 100,
       height: 100,
-      //color: Colors.green,
+      // color: Colors.green,
       margin: EdgeInsets.all(5),
       child: Column(
         
         children: [
 
-          ClipRRect(
-            borderRadius: BorderRadius.circular(15),
-            child: FadeInImage(
-              placeholder: AssetImage('assets/loading.gif'),
-              image: NetworkImage('${ChampImageProvider.urlChampImageById(int.parse(championRankResponse.championId))}'),
-              fit: BoxFit.cover,  
-            ),
+          Stack(
+            alignment: Alignment.bottomRight,
+            children: [
+              ClipRRect(
+                borderRadius: BorderRadius.circular(15),
+                child: FadeInImage(
+                  placeholder: AssetImage('assets/loading.gif'),
+                  image: NetworkImage('${ChampImageProvider.urlChampImageById(int.parse(championRankResponse.championId))}'),
+                  fit: BoxFit.cover,
+
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.only(right: 5, bottom: 1),
+                child: Text(' ${championRankResponse.rank}' , style: TextStyle( 
+                    inherit: true,
+                    fontSize: 21.5,
+                    color: Colors.white,
+                    shadows: [
+                      Shadow( // bottomLeft
+                        offset: Offset(-1.5, -1.5),
+                        color: Colors.black87
+                      ),
+                      Shadow( // bottomRight
+                        offset: Offset(1.5, -1.5),
+                        color: Colors.black87
+                      ),
+                      Shadow( // topRight
+                        offset: Offset(1.5, 1.5),
+                        color: Colors.black87
+                      ),
+                      Shadow( // topLeft
+                        offset: Offset(-1.5, 1.5),
+                        color: Colors.black87
+                      ),
+                    ]
+                 ), overflow: TextOverflow.ellipsis, maxLines: 1),
+              )
+            ],
           ),
+          
           SizedBox(height: 3),
           Text(
             championRankResponse.champion,
@@ -73,7 +106,6 @@ class _ChampImage extends StatelessWidget {
             overflow: TextOverflow.ellipsis,
             textAlign: TextAlign.center,
           )
-
         ],
       ),
     );
