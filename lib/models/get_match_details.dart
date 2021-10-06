@@ -140,6 +140,10 @@ class GetMatchDetailsResponse {
       return '${this.killsPlayer}/${this.deaths}/${this.assists}';
     }
 
+    get heroId {
+      return '$referenceName$playerName$match';
+    }
+
     int accountLevel;
     int activeId1;
     int activeId2;
@@ -260,6 +264,9 @@ class GetMatchDetailsResponse {
     String? playerPortalId;
     String? playerPortalUserId;
     dynamic retMsg;
+    bool hasGroup = false;
+    String partyName = 'Solo';
+    String? idHero;
 
     factory GetMatchDetailsResponse.fromJson(Map<String, dynamic> json) => GetMatchDetailsResponse(
         accountLevel: json["Account_Level"],

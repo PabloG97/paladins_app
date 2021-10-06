@@ -40,7 +40,7 @@ class MatchSlider extends StatelessWidget {
                   return Container(
                     child: GestureDetector(
 
-                      onTap: () => Navigator.pushNamed(context, 'details', arguments: getMatchHistoryResponse[index].match),
+                      onTap: () => Navigator.pushNamed(context, 'details',  arguments: getMatchHistoryResponse[index].match),
                   
                       child: ClipRRect(
                         borderRadius: BorderRadius.only(bottomRight: Radius.elliptical(85, 65), topLeft: Radius.circular(45) ),
@@ -128,13 +128,14 @@ class _MatchDetails extends StatelessWidget {
   final int index;
   @override
   Widget build(BuildContext context) {
+    getMatchHistoryResponse[index].idHero = getMatchHistoryResponse[index].champion.toString()+getMatchHistoryResponse[index].playerName.toString()+getMatchHistoryResponse[index].match.toString();
     return Container(
       margin: EdgeInsets.all(5),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
           Hero(
-            tag: '${getMatchHistoryResponse[index].champion}${getMatchHistoryResponse[index].playerName}${getMatchHistoryResponse[index].match}',
+            tag: getMatchHistoryResponse[index].idHero!,
             child: ClipRRect(
               borderRadius: BorderRadius.circular(15),
               child: FadeInImage(

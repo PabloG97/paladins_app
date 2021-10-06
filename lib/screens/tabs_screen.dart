@@ -28,11 +28,13 @@ class _Navegacion extends StatelessWidget {
     return BottomNavigationBar(
       currentIndex: navegacionModel.paginaActual,
       onTap: (i) => navegacionModel.paginaActual= i,
+      type: BottomNavigationBarType.fixed,
       items: [
         //BottomNavigationBarItem(icon: Icon(Icons.person_outline_outlined),title: 'add'),
         BottomNavigationBarItem(icon: Icon(Icons.person),label: 'Profile'),
+        BottomNavigationBarItem(icon: Icon(Icons.stacked_bar_chart),label: 'Analysis'),
         BottomNavigationBarItem(icon: Icon(Icons.list_alt),label: 'History'),
-        BottomNavigationBarItem(icon: Icon(Icons.headset),label: 'Current match'),
+        BottomNavigationBarItem(icon: Icon(Icons.headset),label: 'Live match'),
 
       ],
     );
@@ -58,6 +60,8 @@ class _Paginas extends StatelessWidget {
         // Navigator.pushNamed(context, 'profile', arguments: 'Gêno'),
 
         ProfileScreen(),
+
+        AnalysisScreen(),
 
         MatchHistoryScreen(),
 

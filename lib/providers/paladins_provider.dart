@@ -31,6 +31,7 @@ class PaladinsProvider extends ChangeNotifier {
   List<MatchPlayerDetails> matchPlayerDetails = [];
   List<GetChampionsRankResponse> championsRank = [];
   List<GetQueueStatsResponse> getQueueStatsResponse = [];
+  List<GetQueueStatsResponse> getCasualStats = [];
   List<GetMatchHistoryResponse> getMatchHistoryResponse = [];
   Map<int, List<GetMatchDetailsResponse>> getMatchDetailResponse = {};
   List<GetItemsResponse> getItemsResponse = [];
@@ -47,13 +48,15 @@ class PaladinsProvider extends ChangeNotifier {
   PaladinsProvider()  {
 
     print('PaladinsProvider init');
-    _timeStamp = getTimeStamp(_today);
+    
    
     createSession();
     
   }
 
   Future<String> _getJsonData(String method, [String parameter = '']) async {
+    _today            = new DateTime.now().toUtc();
+    _timeStamp        = getTimeStamp(_today);
     String _signature = createSignature(method);
     final url = Uri.https(_endPoint, '/paladinsapi.svc/$method$_responseFormat/$_devId/$_signature/$_sessionId/$_timeStamp$parameter');
     final response = await http.get(url);
@@ -75,17 +78,29 @@ class PaladinsProvider extends ChangeNotifier {
     return _digest.toString();
   }
 
-  createSession() async {
-    String _signature =  this.createSignature('createsession');
-    final url = Uri.https(_endPoint, '/paladinsapi.svc/createsession$_responseFormat/$_devId/$_signature/$_timeStamp');
-    //print('createSession (URL): $url');
-    final response = await http.get(url);
-    final Map<String, dynamic>decodedData = json.decode(response.body);
-    _sessionId =  decodedData['session_id'];
-    getPlayer();
-    getItems();
-    
+  Future createSession() async {
+    bool _neverTrue = false;
+    bool _firstTime = true;
 
+    while(!_neverTrue){
+      _today            = new DateTime.now().toUtc();
+      _timeStamp        = getTimeStamp(_today);
+      String _signature =  this.createSignature('createsession');
+      final url = Uri.https(_endPoint, '/paladinsapi.svc/createsession$_responseFormat/$_devId/$_signature/$_timeStamp');
+      print('createSession (URL): $url');
+      final response = await http.get(url);
+      final Map<String, dynamic>decodedData = json.decode(response.body);
+      _sessionId =  decodedData['session_id'];
+      if(_firstTime ){
+        getPlayer();
+        getItems();
+        _firstTime = false;
+      }
+      else{
+        refreshGetPlayer();
+      }
+      await Future.delayed(Duration(minutes: 14));
+    }
   }
 
   Future getPlayer() async{
@@ -96,6 +111,7 @@ class PaladinsProvider extends ChangeNotifier {
     getPlayerStatus( playerId);
     getChampionsRank(playerId);
     getQueueStats(playerId, 486);
+    getQueueStats(playerId, 424);
     getMatchHistory();
     notifyListeners();
     // _getJsonData('getchampionskins','/2092/9');
@@ -139,6 +155,7 @@ class PaladinsProvider extends ChangeNotifier {
       final decodedData = getMatchPlayerDetailsFromJson( jsonData );
       matchPlayerDetails = decodedData;
       if(matchPlayerDetails[0].queue != '486'){
+        _idCasuals = '/';
         for(int i=0; i< matchPlayerDetails.length - 1; i++){
           _idCasuals = '$_idCasuals${matchPlayerDetails[i].playerId.toString()},';
         }
@@ -164,9 +181,14 @@ class PaladinsProvider extends ChangeNotifier {
 
     final jsonData = await this._getJsonData('getqueuestats','/$playerId/$queueId');
     final _getQueueStats = getQueueStatsResponseFromJson( jsonData );
-    getQueueStatsResponse = ( _getQueueStats );
+    if(queueId == 424){
+      getCasualStats = (_getQueueStats);
+    }else{
+      getQueueStatsResponse = ( _getQueueStats );
+    }
     notifyListeners();
   }
+
 
   Future getMatchHistory() async {
     final jsonData = await this._getJsonData('getmatchhistory', '/$playerId');
@@ -214,6 +236,8 @@ class PaladinsProvider extends ChangeNotifier {
   }
 
   Future <List<SearchPlayerResponse>> searchPlayer(String query) async {
+    _today            = new DateTime.now().toUtc();
+    _timeStamp        = getTimeStamp(_today);
     String _signature = createSignature('searchplayers');
     final url = Uri.https(_endPoint, '/paladinsapi.svc/searchplayers$_responseFormat/$_devId/$_signature/$_sessionId/$_timeStamp/$query');
     
@@ -255,6 +279,13 @@ clearData(String newName){
 
 }
 
+  Future refreshGetPlayer() async {
+    final _response = await this._getJsonData('getplayer', '/$playerSearch');
+    final _getPlayerResponse = getPlayerReponseFromJson(_response);
+    getPlayerResponse = _getPlayerResponse;
+    playerId = _getPlayerResponse[0].id;
+    getPlayerStatus( playerId);
+  }
 
 }
 

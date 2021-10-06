@@ -4,7 +4,7 @@ import 'package:paladins_app/models/models.dart';
 
 class DataAnalyzer {
 
-  static mainRole(List<GetQueueStatsResponse> championList){
+  static mainRoleRanked(List<GetQueueStatsResponse> championList){
     int _supportMatches = 0, _frontlineMatches = 0, _flankMatches = 0, _damageMatches = 0;
 
     for( int i = 0; i < championList.length; i++ ){
@@ -25,6 +25,8 @@ class DataAnalyzer {
     else return 'Damage';
   }
 
+
+
   static getImageRole( String champion){
     
       if(champion == 'Ash' || champion == 'Atlas' || champion == 'Barik' || champion == 'Fernando' || champion == 'Inara' || champion == 'Khan' || champion == 'Makoa' || champion == 'Raum' || champion == 'Ruckus' || champion == 'Terminus' || champion == 'Terminus' || champion == 'Torvald' ||  champion == 'Yagorath'){
@@ -44,8 +46,6 @@ class DataAnalyzer {
         return 'assets/img/Damage_Icon.png';
       
       }
-    
-
   }
 }
 
