@@ -17,11 +17,11 @@ class PaladinsProvider extends ChangeNotifier {
   String _responseFormat = 'Json';
   String _sessionId      = '';
   String _timeStamp      = '';
-  String _idCasuals       = '/';
-  DateTime _today         = new DateTime.now().toUtc();
+  String _idCasuals      = '/';
+  DateTime _today        = new DateTime.now().toUtc();
   String state           = '';
   int status             = -1;
-  String playerSearch    = 'Gêno';
+  String playerSearch    = 'gêno';
   int playerId           = -1;
 
 
@@ -69,6 +69,7 @@ class PaladinsProvider extends ChangeNotifier {
     return _timeStamp;
   }
 
+  //Function that creates a signature, necessary for accessing the API
   createSignature(String request) {
     //String _timeStamp = getTimeStamp(today);
     String _signature = _devId+request+_authKey+_timeStamp; //+ currentTime
@@ -78,6 +79,7 @@ class PaladinsProvider extends ChangeNotifier {
     return _digest.toString();
   }
 
+  // Función que crea una sesión para poder utilizar el API
   Future createSession() async {
     bool _neverTrue = false;
     bool _firstTime = true;
@@ -103,6 +105,7 @@ class PaladinsProvider extends ChangeNotifier {
     }
   }
 
+  //Get all the information of a specific player (Set at class initialization)
   Future getPlayer() async{
     final _response = await this._getJsonData('getplayer', '/$playerSearch');
     final _getPlayerResponse = getPlayerReponseFromJson(_response);
@@ -114,6 +117,7 @@ class PaladinsProvider extends ChangeNotifier {
     getQueueStats(playerId, 424);
     getMatchHistory();
     notifyListeners();
+    // getChampions();
     // _getJsonData('getchampionskins','/2092/9');
     // _getJsonData('getbountyitems');
   }
@@ -122,11 +126,11 @@ class PaladinsProvider extends ChangeNotifier {
     
   //   final jsonData = await this._getJsonData('getchampions','/1');
   //   final _getChampions = getChampionsResponseFromJson( jsonData );
-  //   // for (int i = 0; i < jsonData.length; i++){
+  //   for (int i = 0; i < jsonData.length; i++){
 
-  //   //   print('case "${_getChampions[i].nameEnglish}": {  return "${_getChampions[i].championIconUrl}";} ');
-  //   //   print("${_getChampions[i].championIconUrl}");
-  //   // }
+  //     print('case "${_getChampions[i].nameEnglish}": {  return "${_getChampions[i].championIconUrl}";} ');
+  //     print("${_getChampions[i].championIconUrl}");
+  //   }
   
   // }
 
